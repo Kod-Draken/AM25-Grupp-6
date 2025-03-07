@@ -17,7 +17,7 @@ public class FirstScreen implements Screen {
     private Texture background;
     private Texture birb;
     private Texture obstacle;
-    private Texture gameOver;
+    private Texture gameOverTxt;
     private SpriteBatch batch;
     private FitViewport viewport;
     private Sprite birbSprite;
@@ -28,17 +28,18 @@ public class FirstScreen implements Screen {
     private float delta;
     private float worldWidth;
     private float worldHeight;
+    boolean gameOver = false;
 
     public FirstScreen() {
         background = new Texture("placeholder_background.jpg");
         birb = new Texture("placeholder_birb.jpg");
-        gameOver = new Texture("gameover.png");
+        gameOverTxt = new Texture("gameover.png");
         //obstacle = new Texture("placeholder_obstacle.jpg");
         batch = new SpriteBatch();
         viewport = new FitViewport(800, 500);
         birbSprite = new Sprite(birb);
         birbSprite.setSize(100, 100);
-        gameOverSprite = new Sprite(gameOver);
+        gameOverSprite = new Sprite(gameOverTxt);
         gameOverSprite.setSize(10, 10);
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
@@ -52,10 +53,13 @@ public class FirstScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
         // Draw your screen here. "delta" is the time since last render in seconds.
-        jump();
-        draw();
-        logic();
+        if (!gameOver) {
+            logic();
+        }
+            draw();
+            jump();
     }
 
     @Override
@@ -73,11 +77,19 @@ public class FirstScreen implements Screen {
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
+        if (gameOver) {
+            batch.draw(gameOverSprite,0, 0, worldWidth, worldHeight);
+        }
+        else {
         batch.draw(background, 0, 0, worldWidth, worldHeight);
         birbSprite.draw(batch);
+        }
         batch.end();
     }
 
+    /**
+     * Press space to jump, simple as that
+     */
     private void jump() {
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             velocity = jumpStrenght;
@@ -85,35 +97,34 @@ public class FirstScreen implements Screen {
     }
 
     /**
-     * Checks if the player hits the lowest allowed coordinate.
-     * @return true if coordinate is reached, otherwise false.
+     * Checks if player goes beyond allowed Y-coordinate.
+     * @return true if coordinate is reached.
      */
     private boolean isGameOver() {
         return birbSprite.getY() < -50;
+
     }
 
     /**
-     * For now only draws an ugly "GAME OVER" sprite
+     * Unused for now, instead relies on the "boolean gameOver"
+     * which is set if isGameOver() returns true
      */
     private void gameOver() {
-        batch.begin();
-        batch.draw(gameOverSprite,0, 0, worldWidth, worldHeight);
-        batch.end();
     }
 
     private void logic() {
-        delta = Gdx.graphics.getDeltaTime();
+        delta = Gdx.graphics.getDeltaTime(); // speed doesn't scale with framerate
 
-        velocity += gravity;
-        birbSprite.translateY(velocity * delta);
+        velocity += gravity; // gravity affects speed
+        birbSprite.translateY(velocity * delta); // bird moves Y-axis according to speed
 
-        float birdWidth = birb.getWidth();
-        float birdHeight = birb.getHeight();
+        float birdWidth = birb.getWidth(); // unused?
+        float birdHeight = birb.getHeight(); // unused?
 
         birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -100, worldHeight + 100));
 
         if (isGameOver()) {
-            gameOver();
+            gameOver = true;
         };
     }
 
