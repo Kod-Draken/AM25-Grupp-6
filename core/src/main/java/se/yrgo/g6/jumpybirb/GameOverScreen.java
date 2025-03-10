@@ -14,19 +14,29 @@ public class GameOverScreen implements Screen {
     private float worldWidth;
     private float worldHeight;
     private BirbGame game;
+    int score;
 
 
-    public GameOverScreen(BirbGame game, FitViewport viewport) {
+
+    public GameOverScreen(BirbGame game, FitViewport viewport, int score) {
         this.game = game;
         batch = new SpriteBatch();
         gameOver = new Texture("gameover.png");
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
+        score = score;
+
     }
 
     private void draw() {
         batch.begin();
         batch.draw(gameOver, 0, 0, worldWidth, worldHeight);
+        bigFont.draw(batch, "Game Over!", 100, 100, 600, Align.center, false);
+
+        String points = String.format("You scored: %d", alienGame.getPoints());
+        smallFont.draw(batch, points, 100, 50, 600, Align.center, false);
+
+        alienHead.draw(batch, elapsedTime)
         batch.end();
     }
 

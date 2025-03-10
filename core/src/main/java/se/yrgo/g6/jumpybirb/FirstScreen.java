@@ -26,6 +26,9 @@ public class FirstScreen implements Screen {
     private float delta;
     private float worldWidth;
     private float worldHeight;
+    private int score = 0;
+    private int highScore = 0;
+
 
     public FirstScreen(BirbGame game, FitViewport viewport) {
         background = new Texture("placeholder_background.jpg");
@@ -50,7 +53,7 @@ public class FirstScreen implements Screen {
     public void render(float delta) {
         // Draw your screen here. "delta" is the time since last render in seconds.
         if (isGameOver()) {
-            game.gameOver();
+            game.gameOver(score);
             return;
         }
         jump();
@@ -81,6 +84,7 @@ public class FirstScreen implements Screen {
     private void jump() {
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             velocity = jumpStrenght;
+            score += 1;
         }
     }
 
