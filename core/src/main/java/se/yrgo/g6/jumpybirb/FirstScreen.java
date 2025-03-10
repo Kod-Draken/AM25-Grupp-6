@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,32 +16,29 @@ public class FirstScreen implements Screen {
     private Texture background;
     private Texture birb;
     private Texture obstacle;
-    private Texture gameOver;
     private SpriteBatch batch;
-    private FitViewport viewport;
     private Sprite birbSprite;
-    private Sprite gameOverSprite;
-     float velocity = 0;
-    final float gravity = -30;
+    private FitViewport viewport;
+    private BirbGame game;
+    float velocity = 0;
+    final private float gravity = -30;
     final private float jumpStrenght = 500f;
     private float delta;
     private float worldWidth;
     private float worldHeight;
 
-    public FirstScreen() {
+    public FirstScreen(BirbGame game, FitViewport viewport) {
         background = new Texture("placeholder_background.jpg");
         birb = new Texture("placeholder_birb.jpg");
-        gameOver = new Texture("gameover.png");
         //obstacle = new Texture("placeholder_obstacle.jpg");
         batch = new SpriteBatch();
-        viewport = new FitViewport(800, 500);
         birbSprite = new Sprite(birb);
         birbSprite.setSize(100, 100);
-        gameOverSprite = new Sprite(gameOver);
-        gameOverSprite.setSize(10, 10);
+        this.viewport = viewport;
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
+        this.game = game;
     }
 
     @Override
@@ -53,6 +49,10 @@ public class FirstScreen implements Screen {
     @Override
     public void render(float delta) {
         // Draw your screen here. "delta" is the time since last render in seconds.
+        if (isGameOver()) {
+            game.gameOver();
+            return;
+        }
         jump();
         draw();
         logic();
@@ -92,15 +92,6 @@ public class FirstScreen implements Screen {
         return birbSprite.getY() < -50;
     }
 
-    /**
-     * For now only draws an ugly "GAME OVER" sprite
-     */
-    private void gameOver() {
-        batch.begin();
-        batch.draw(gameOverSprite,0, 0, worldWidth, worldHeight);
-        batch.end();
-    }
-
     private void logic() {
         delta = Gdx.graphics.getDeltaTime();
 
@@ -110,11 +101,8 @@ public class FirstScreen implements Screen {
         float birdWidth = birb.getWidth();
         float birdHeight = birb.getHeight();
 
-        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -100, worldHeight + 100));
+        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));
 
-        if (isGameOver()) {
-            gameOver();
-        };
     }
 
     @Override
@@ -129,6 +117,6 @@ public class FirstScreen implements Screen {
 
     @Override
     public void dispose() {
-        // Destroy screen's assets here.
+        batch.dispose();
     }
 }
