@@ -28,8 +28,8 @@ public class FirstScreen implements Screen {
     private float worldHeight;
 
     public FirstScreen(BirbGame game, FitViewport viewport) {
-        background = new Texture("placeholder_background.jpg");
-        birb = new Texture("placeholder_birb.jpg");
+        background = new Texture("background.png");
+        birb = new Texture("birb.png");
         //obstacle = new Texture("placeholder_obstacle.jpg");
         batch = new SpriteBatch();
         birbSprite = new Sprite(birb);
