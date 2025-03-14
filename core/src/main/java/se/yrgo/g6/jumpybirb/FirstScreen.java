@@ -29,10 +29,9 @@ public class FirstScreen implements Screen {
     private int score = 0;
     private int highScore = 0;
 
-
     public FirstScreen(BirbGame game, FitViewport viewport) {
-        background = new Texture("placeholder_background.jpg");
-        birb = new Texture("placeholder_birb.jpg");
+        background = new Texture("background.png");
+        birb = new Texture("birb.png");
         //obstacle = new Texture("placeholder_obstacle.jpg");
         batch = new SpriteBatch();
         birbSprite = new Sprite(birb);
@@ -94,6 +93,12 @@ public class FirstScreen implements Screen {
      */
     private boolean isGameOver() {
         return birbSprite.getY() < -50;
+        {
+            game.gameOver(score); // Detta skickar slutpoäng till gameover metoden
+            return true;
+            {
+                return false;
+            }
     }
 
     private void logic() {

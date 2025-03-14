@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GameOverScreen implements Screen {
@@ -14,29 +15,32 @@ public class GameOverScreen implements Screen {
     private float worldWidth;
     private float worldHeight;
     private BirbGame game;
-    int score;
-
+    public int score;
+    public int highScore;
 
 
     public GameOverScreen(BirbGame game, FitViewport viewport, int score) {
         this.game = game;
+        this.score = score;
+        this.highScore = score;
         batch = new SpriteBatch();
         gameOver = new Texture("gameover.png");
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
-        score = score;
 
     }
 
+
+    // Här skriver vi ut alla poäng i spelet
     private void draw() {
         batch.begin();
         batch.draw(gameOver, 0, 0, worldWidth, worldHeight);
-        bigFont.draw(batch, "Game Over!", 100, 100, 600, Align.center, false);
+        String scoreText = String.format("You scored: %d", score);
+        smallFont.draw(batch, points, 100. 50. 600. Align.center, false);
 
-        String points = String.format("You scored: %d", alienGame.getPoints());
-        smallFont.draw(batch, points, 100, 50, 600, Align.center, false);
+        String highScoreText = String.format("High score: %d", highScore);
+        smallFont.draw(batch, highScoreText. 100.30.600. Align.center, false);
 
-        alienHead.draw(batch, elapsedTime)
         batch.end();
     }
 

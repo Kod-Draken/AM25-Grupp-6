@@ -17,8 +17,15 @@ public class BirbGame extends Game {
     }
 
     public void gameOver() {
+
         setScreen(new GameOverScreen(this, viewport));
     }
+    public void gameOver(int finalScore) {
+        if (finalScore > highScore) {
+            highScore = finalScore; // Uppdaterar highscore om spelaren slog rekordet
 
+        }
+        setScreen(new GameOverScreen(this,viewport,finalScore,highScore));
+    }
 
 }
