@@ -90,8 +90,10 @@ public class FirstScreen implements Screen {
             //temp score
             game.setScore(game.getScore() + 1);
         }
+        // When pressing ESC, pause game and hide birb
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.pauseGame();
+            birbSprite.setSize(0,0);
         }
     }
 
@@ -122,7 +124,8 @@ public class FirstScreen implements Screen {
 
     @Override
     public void resume() {
-        // When resuming game automatically jump once
+        // When resuming game, show birb and jump once
+        birbSprite.setSize(100, 100);
         velocity = jumpStrenght;
     }
 
