@@ -55,6 +55,7 @@ public class FirstScreen implements Screen {
     public void render(float delta) {
         // Draw your screen here. "delta" is the time since last render in seconds.
         if (isGameOver()) {
+            dispose();
             game.gameOver();
             return;
         }
@@ -80,14 +81,14 @@ public class FirstScreen implements Screen {
         batch.begin();
         batch.draw(background, 0, 0, worldWidth, worldHeight);
         birbSprite.draw(batch);
-        font.draw(batch, "highscore: " + game.getHighScore(), 40, 60);
+        font.draw(batch, "Score: " + game.getScore(), 10, 470);
         batch.end();
     }
 
     private void jump() {
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             velocity = jumpStrenght;
-            //temp score
+            // For now score is increased when jumping.
             game.setScore(game.getScore() + 1);
         }
         // When pressing ESC, pause game and hide birb
