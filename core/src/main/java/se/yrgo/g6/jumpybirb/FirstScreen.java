@@ -59,8 +59,8 @@ public class FirstScreen implements Screen {
             return;
         }
         jump();
-        draw();
         logic();
+        draw();
     }
 
     @Override
@@ -100,7 +100,7 @@ public class FirstScreen implements Screen {
      * @return true if coordinate is reached, otherwise false.
      */
     private boolean isGameOver() {
-        return birbSprite.getY() < -50f;
+        return birbSprite.getY() < -30f;
     }
 
     private void logic() {
