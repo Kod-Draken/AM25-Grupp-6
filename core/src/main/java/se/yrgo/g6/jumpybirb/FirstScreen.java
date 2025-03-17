@@ -21,8 +21,8 @@ public class FirstScreen implements Screen {
     private Sprite birbSprite;
     private FitViewport viewport;
     private BirbGame game;
-    float velocity = 0;
-    final private float gravity = -30;
+    float velocity = 0f;
+    final private float gravity = -30f;
     final private float jumpStrenght = 500f;
     private float delta;
     private float worldWidth;
@@ -42,7 +42,8 @@ public class FirstScreen implements Screen {
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
         font = new BitmapFont();
         this.game = game;
-
+        font.setColor(Color.WHITE);
+        font.getData().setScale(2f);
     }
 
     @Override
@@ -79,14 +80,18 @@ public class FirstScreen implements Screen {
         batch.begin();
         batch.draw(background, 0, 0, worldWidth, worldHeight);
         birbSprite.draw(batch);
-        font.draw(batch, "highscore: " + game.getHighscore(), 40, 60);
+        font.draw(batch, "highscore: " + game.getHighScore(), 40, 60);
         batch.end();
     }
 
     private void jump() {
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             velocity = jumpStrenght;
+            //temp score
             game.setScore(game.getScore() + 1);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            game.pauseGame();
         }
     }
 
@@ -95,14 +100,14 @@ public class FirstScreen implements Screen {
      * @return true if coordinate is reached, otherwise false.
      */
     private boolean isGameOver() {
-        return birbSprite.getY() < -50;
+        return birbSprite.getY() < -50f;
     }
 
     private void logic() {
         delta = Gdx.graphics.getDeltaTime();
 
-        if (game.getScore() > game.getHighscore()) {
-            game.setHighscore(game.getScore());
+        if (game.getScore() > game.getHighScore()) {
+            game.setHighScore(game.getScore());
         }
 
         velocity += gravity;
@@ -117,7 +122,8 @@ public class FirstScreen implements Screen {
 
     @Override
     public void resume() {
-        // Invoked when your application is resumed after pause.
+        // When resuming game automatically jump once
+        velocity = jumpStrenght;
     }
 
     @Override

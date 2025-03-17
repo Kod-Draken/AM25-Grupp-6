@@ -3,10 +3,10 @@ package se.yrgo.g6.jumpybirb;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GameOverScreen implements Screen {
@@ -29,6 +29,16 @@ public class GameOverScreen implements Screen {
 
     private void draw() {
         batch.begin();
+        String score;
+        if (game.getScore() > game.getHighScore()) {
+            score = "New Best!: " + game.getHighScore();
+        }else {
+            score = "Best: " + game.getHighScore();
+        }
+        BitmapFont font = new BitmapFont();
+        font.getData().setScale(3f);
+
+        font.draw(batch, score, worldWidth / 2, worldHeight / 2 + 200f);
         batch.draw(gameOver, 0, 0, worldWidth, worldHeight);
         font.draw(batch, "Score: " + game.getScore(), 40, 40);
         batch.end();
@@ -59,7 +69,6 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void pause() {
-
     }
 
     @Override
