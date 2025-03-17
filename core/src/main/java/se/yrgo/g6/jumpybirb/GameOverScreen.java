@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -14,6 +15,7 @@ public class GameOverScreen implements Screen {
     private float worldWidth;
     private float worldHeight;
     private BirbGame game;
+    private BitmapFont font;
 
 
     public GameOverScreen(BirbGame game, FitViewport viewport) {
@@ -22,11 +24,13 @@ public class GameOverScreen implements Screen {
         gameOver = new Texture("gameover.png");
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
+        font = new BitmapFont();
     }
 
     private void draw() {
         batch.begin();
         batch.draw(gameOver, 0, 0, worldWidth, worldHeight);
+        font.draw(batch, "Score: " + game.getScore(), 40, 40);
         batch.end();
     }
 

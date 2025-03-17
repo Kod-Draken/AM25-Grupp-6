@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -26,6 +27,7 @@ public class FirstScreen implements Screen {
     private float delta;
     private float worldWidth;
     private float worldHeight;
+    private BitmapFont font;
 
     public FirstScreen(BirbGame game, FitViewport viewport) {
         background = new Texture("background.png");
@@ -38,7 +40,9 @@ public class FirstScreen implements Screen {
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
+        font = new BitmapFont();
         this.game = game;
+
     }
 
     @Override
@@ -75,12 +79,14 @@ public class FirstScreen implements Screen {
         batch.begin();
         batch.draw(background, 0, 0, worldWidth, worldHeight);
         birbSprite.draw(batch);
+        font.draw(batch, "highscore: " + game.getHighscore(), 40, 60);
         batch.end();
     }
 
     private void jump() {
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             velocity = jumpStrenght;
+            game.setScore(game.getScore() + 1);
         }
     }
 
@@ -94,6 +100,10 @@ public class FirstScreen implements Screen {
 
     private void logic() {
         delta = Gdx.graphics.getDeltaTime();
+
+        if (game.getScore() > game.getHighscore()) {
+            game.setHighscore(game.getScore());
+        }
 
         velocity += gravity;
         birbSprite.translateY(velocity * delta);
