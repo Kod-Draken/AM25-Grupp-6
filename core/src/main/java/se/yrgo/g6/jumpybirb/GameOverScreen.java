@@ -36,25 +36,26 @@ public class GameOverScreen implements Screen {
         birbSprite = new Sprite(birb);
         birbSprite.setSize(100, 100);
         birbSprite.setPosition(worldWidth / 2 -50f,  -30f);
+        font = new BitmapFont();
+        font.getData().setScale(2f);
     }
 
     private void draw() {
-        ScreenUtils.clear(Color.BLACK);
         batch.begin();
         batch.draw(background, 0, 0, worldWidth, worldHeight);
         birbSprite.draw(batch);
-        String score;
-        if (game.getScore() > game.getHighScore()) {
-            score = "New Best!: " + game.getHighScore();
-        }else {
-            score = "Best: " + game.getHighScore();
-        }
-        BitmapFont font = new BitmapFont();
-        font.getData().setScale(3f);
 
-        font.draw(batch, score, worldWidth / 2, worldHeight / 2 + 200f);
+        // Depending on
+        String highscore;
+        if (game.getScore() > game.getHighScore()) {
+            highscore = "New best!: ";
+        }else {
+            highscore = "Best: ";
+        }
+
         batch.draw(gameOver, 0, 0, worldWidth, worldHeight);
-        font.draw(batch, "Score: " + game.getScore(), 40, 40);
+        font.draw(batch, "Score: " + game.getScore(), 10, 470);
+        font.draw(batch, highscore + game.getScore(), 10, 440);
         batch.end();
     }
 
