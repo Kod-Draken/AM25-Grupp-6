@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -20,12 +21,15 @@ public class FirstScreen implements Screen {
     private Sprite birbSprite;
     private FitViewport viewport;
     private BirbGame game;
-    float velocity = 0;
-    final private float gravity = -30;
+    private BitmapFont font = new BitmapFont();
+    private float velocity = 0f;
+    final private float gravity = -30f;
     final private float jumpStrenght = 500f;
     private float delta;
     private float worldWidth;
     private float worldHeight;
+    private String score;
+
 
     public FirstScreen(BirbGame game, FitViewport viewport) {
         background = new Texture("background.png");
@@ -37,8 +41,10 @@ public class FirstScreen implements Screen {
         this.viewport = viewport;
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
-        birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
+        birbSprite.setPosition(worldWidth / 2 -50f, worldHeight / 2 -50f);
         this.game = game;
+        font.setColor(Color.WHITE);
+        font.getData().setScale(2f);
     }
 
     @Override
@@ -50,6 +56,12 @@ public class FirstScreen implements Screen {
     public void render(float delta) {
         // Draw your screen here. "delta" is the time since last render in seconds.
         if (isGameOver()) {
+            if (game.getScore() > game.getHighScore()) {
+                game.setNewHighScore(true);
+                game.setHighScore(game.getScore());
+            } else {
+                game.setNewHighScore(false);
+            }
             game.gameOver();
             return;
         }
@@ -58,16 +70,6 @@ public class FirstScreen implements Screen {
         logic();
     }
 
-    @Override
-    public void resize(int width, int height) {
-        // Resize your screen here. The parameters represent the new window size.
-        viewport.update(width, height, true);
-    }
-
-    @Override
-    public void pause() {
-        // Invoked when your application is paused.
-    }
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
@@ -75,12 +77,19 @@ public class FirstScreen implements Screen {
         batch.begin();
         batch.draw(background, 0, 0, worldWidth, worldHeight);
         birbSprite.draw(batch);
+        score = "" + game.getScore();
+        font.draw(batch, score, worldWidth / 2 - font.getScaleX(), worldHeight / 2 + 100f);
         batch.end();
     }
 
     private void jump() {
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             velocity = jumpStrenght;
+            //temp score
+            game.setScore(game.getScore() + 1);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            game.pauseGame();
         }
     }
 
@@ -89,7 +98,7 @@ public class FirstScreen implements Screen {
      * @return true if coordinate is reached, otherwise false.
      */
     private boolean isGameOver() {
-        return birbSprite.getY() < -50;
+        return birbSprite.getY() < -50f;
     }
 
     private void logic() {
@@ -98,16 +107,23 @@ public class FirstScreen implements Screen {
         velocity += gravity;
         birbSprite.translateY(velocity * delta);
 
-        float birdWidth = birb.getWidth();
-        float birdHeight = birb.getHeight();
-
         birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));
+    }
 
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
+    }
+
+    @Override
+    public void pause() {
+        // Invoked when your application is paused.
     }
 
     @Override
     public void resume() {
-        // Invoked when your application is resumed after pause.
+        // When resuming game automatically jump once
+        velocity = jumpStrenght;
     }
 
     @Override
