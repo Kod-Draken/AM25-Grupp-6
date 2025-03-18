@@ -14,34 +14,51 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
+    private FitViewport viewport;
+    private BirbGame game;
+    private float delta;
+
+    private float worldWidth;
+    private float worldHeight;
+
     private Texture background;
     private Texture birb;
     private Texture obstacle;
+
     private SpriteBatch batch;
     private Sprite birbSprite;
-    private FitViewport viewport;
-    private BirbGame game;
+    private Sprite obstacleSprite;
+
+    // gravity and jumping
     float velocity = 0f;
     final private float gravity = -30f;
     final private float jumpStrenght = 500f;
-    private float delta;
-    private float worldWidth;
-    private float worldHeight;
+
+    //obstacles
+    final private float obstacleSpeed = -5f;
+
     private BitmapFont font;
 
     public FirstScreen(BirbGame game, FitViewport viewport) {
+        this.game = game;
+        this.viewport = viewport;
+
         background = new Texture("background.png");
         birb = new Texture("birb.png");
-        //obstacle = new Texture("placeholder_obstacle.jpg");
+        obstacle = new Texture("obstacle.png");
+
         batch = new SpriteBatch();
+        obstacleSprite = new Sprite(obstacle);
+        obstacleSprite.setSize(obstacle.getWidth(), obstacle.getHeight());
         birbSprite = new Sprite(birb);
         birbSprite.setSize(100, 100);
-        this.viewport = viewport;
+
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
+        obstacleSprite.setPosition(worldWidth, 0);
+
         font = new BitmapFont();
-        this.game = game;
         font.setColor(Color.WHITE);
         font.getData().setScale(2f);
     }
@@ -78,10 +95,17 @@ public class FirstScreen implements Screen {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
+
         batch.begin();
+
         batch.draw(background, 0, 0, worldWidth, worldHeight);
+
         birbSprite.draw(batch);
+
+        obstacleSprite.draw(batch);
+
         font.draw(batch, "Score: " + game.getScore(), 10, 470);
+
         batch.end();
     }
 
@@ -115,6 +139,8 @@ public class FirstScreen implements Screen {
 
         velocity += gravity;
         birbSprite.translateY(velocity * delta);
+
+        obstacleSprite.translateX(obstacleSpeed);
 
         float birdWidth = birb.getWidth();
         float birdHeight = birb.getHeight();
