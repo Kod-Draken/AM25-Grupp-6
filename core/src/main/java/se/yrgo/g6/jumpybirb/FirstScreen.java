@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -28,9 +29,11 @@ public class FirstScreen implements Screen {
     private float worldWidth;
     private float worldHeight;
     private BitmapFont font;
+    private float backgroundOffset;
 
     public FirstScreen(BirbGame game, FitViewport viewport) {
-        background = new Texture("background.png");
+        background = new Texture("background-WIDER.png");
+        background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         birb = new Texture("birb.png");
         //obstacle = new Texture("placeholder_obstacle.jpg");
         batch = new SpriteBatch();
@@ -44,6 +47,8 @@ public class FirstScreen implements Screen {
         this.game = game;
         font.setColor(Color.WHITE);
         font.getData().setScale(2f);
+        backgroundOffset = 0;
+
     }
 
     @Override
@@ -59,8 +64,8 @@ public class FirstScreen implements Screen {
             game.gameOver();
             return;
         }
-        jump();
         logic();
+        jump();
         draw();
     }
 
@@ -78,10 +83,24 @@ public class FirstScreen implements Screen {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
+
+        // Scrolling background
+        backgroundOffset -= 2;
+        if (backgroundOffset % (worldWidth * 2) == 0) {
+            backgroundOffset = 0;
+        }
+
         batch.begin();
-        batch.draw(background, 0, 0, worldWidth, worldHeight);
+
+        // draw two backgrounds to achieve a seamless transition, move to private method?
+        batch.draw(background, backgroundOffset, 0, worldWidth * 2, worldHeight);
+        batch.draw(background, backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
+
         birbSprite.draw(batch);
-        font.draw(batch, "Score: " + game.getScore(), 10, 470);
+
+        // move to private method?
+        font.draw(batch, "Score: " + game.getScore(), 250, 470, 300, Align.center, true);
+
         batch.end();
     }
 
@@ -120,7 +139,6 @@ public class FirstScreen implements Screen {
         float birdHeight = birb.getHeight();
 
         birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));
-
     }
 
     @Override
