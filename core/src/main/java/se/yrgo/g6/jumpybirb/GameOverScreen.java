@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GameOverScreen implements Screen {
     private BirbGame game;
+    private FitViewport viewport;
 
     private float worldWidth;
     private float worldHeight;
@@ -29,6 +30,7 @@ public class GameOverScreen implements Screen {
 
     public GameOverScreen(BirbGame game, FitViewport viewport) {
         this.game = game;
+        this.viewport = viewport;
 
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
@@ -43,6 +45,7 @@ public class GameOverScreen implements Screen {
         birbSprite.setPosition(worldWidth / 2 -50f,  -30f);
 
         font = new BitmapFont();
+        font.setColor(Color.WHITE);
         font.getData().setScale(2f);
     }
 
@@ -56,6 +59,9 @@ public class GameOverScreen implements Screen {
     }
 
     private void draw() {
+        viewport.apply();
+
+        batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         batch.draw(background, 0, 0, worldWidth, worldHeight);
         birbSprite.draw(batch);
@@ -86,8 +92,8 @@ public class GameOverScreen implements Screen {
 
 
     @Override
-    public void resize(int i, int i1) {
-
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
     }
 
     @Override
