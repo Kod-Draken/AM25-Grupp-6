@@ -15,34 +15,44 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
-    private Texture background;
-    private Texture birb;
-    private Texture obstacle;
-    private SpriteBatch batch;
-    private Sprite birbSprite;
-    private FitViewport viewport;
     private BirbGame game;
-    float velocity = 0f;
-    final private float gravity = -30f;
-    final private float jumpStrenght = 500f;
+    private FitViewport viewport;
+
     private float delta;
     private float worldWidth;
     private float worldHeight;
+
+    private Texture background;
+    private Texture birb;
+    private Texture obstacle;
+
+    private SpriteBatch batch;
+    private Sprite birbSprite;
+
     private BitmapFont font;
+
     private float backgroundOffset;
 
+    float velocity = 0f;
+    final private float gravity = -30f;
+    final private float jumpStrenght = 500f;
+
     public FirstScreen(BirbGame game, FitViewport viewport) {
+        this.game = game;
+        this.viewport = viewport;
+
+        worldWidth = viewport.getWorldWidth();
+        worldHeight = viewport.getWorldHeight();
+
         background = new Texture("background-WIDER.png");
-        background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         birb = new Texture("birb.png");
         //obstacle = new Texture("placeholder_obstacle.jpg");
+
         batch = new SpriteBatch();
         birbSprite = new Sprite(birb);
         birbSprite.setSize(100, 100);
-        this.viewport = viewport;
-        worldWidth = viewport.getWorldWidth();
-        worldHeight = viewport.getWorldHeight();
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
+
         font = new BitmapFont();
         this.game = game;
         font.setColor(Color.WHITE);
@@ -69,19 +79,10 @@ public class FirstScreen implements Screen {
         draw();
     }
 
-    @Override
-    public void resize(int width, int height) {
-        // Resize your screen here. The parameters represent the new window size.
-        viewport.update(width, height, true);
-    }
-
-    @Override
-    public void pause() {
-        // Invoked when your application is paused.
-    }
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
+
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         // Scrolling background
@@ -139,6 +140,17 @@ public class FirstScreen implements Screen {
         float birdHeight = birb.getHeight();
 
         birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        // Resize your screen here. The parameters represent the new window size.
+        viewport.update(width, height, true);
+    }
+
+    @Override
+    public void pause() {
+        // Invoked when your application is paused.
     }
 
     @Override
