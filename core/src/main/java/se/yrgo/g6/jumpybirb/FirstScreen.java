@@ -76,6 +76,7 @@ public class FirstScreen implements Screen {
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
+
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         batch.draw(background, 0, 0, worldWidth, worldHeight);
