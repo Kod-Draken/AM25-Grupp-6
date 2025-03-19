@@ -13,31 +13,46 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GameOverScreen implements Screen {
-    private Texture background;
-    private Texture birb;
-    private SpriteBatch batch;
-    private Sprite birbSprite;
-    private Texture gameOver;
+    private BirbGame game;
+
     private float worldWidth;
     private float worldHeight;
-    private BirbGame game;
-    private BitmapFont font;
 
+    private Texture background;
+    private Texture birb;
+    private Texture gameOver;
+
+    private SpriteBatch batch;
+    private Sprite birbSprite;
+
+    private BitmapFont font;
 
     public GameOverScreen(BirbGame game, FitViewport viewport) {
         this.game = game;
-        background = new Texture("background.png");
-        birb = new Texture("birb.png");
-        batch = new SpriteBatch();
-        gameOver = new Texture("gameover.png");
+
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
-        font = new BitmapFont();
+
+        background = new Texture("background.png");
+        birb = new Texture("birb.png");
+        gameOver = new Texture("gameover.png");
+
+        batch = new SpriteBatch();
         birbSprite = new Sprite(birb);
         birbSprite.setSize(100, 100);
         birbSprite.setPosition(worldWidth / 2 -50f,  -30f);
+
         font = new BitmapFont();
         font.getData().setScale(2f);
+    }
+
+    @Override
+    public void render(float v) {
+        if (newGame()) {
+            game.newGame();
+            return;
+        }
+        draw();
     }
 
     private void draw() {
@@ -69,14 +84,6 @@ public class GameOverScreen implements Screen {
 
     }
 
-    @Override
-    public void render(float v) {
-        if (newGame()) {
-            game.newGame();
-            return;
-        }
-        draw();
-    }
 
     @Override
     public void resize(int i, int i1) {
