@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -27,15 +28,16 @@ public class FirstScreen implements Screen {
 
     private SpriteBatch batch;
     private Sprite birbSprite;
-    private Sprite obstacleSprite;
 
-    // gravity and jumping
+    // Gravity and jumping
     float velocity = 0f;
     final private float gravity = -30f;
     final private float jumpStrenght = 500f;
 
-    //obstacles
+    // Obstacles
     final private float obstacleSpeed = -5f;
+    private Array<Sprite> obstacleSprites;
+    private float obstacleTimer;
 
     private BitmapFont font;
 
@@ -46,22 +48,28 @@ public class FirstScreen implements Screen {
         background = new Texture("background.png");
         birb = new Texture("birb.png");
         obstacle = new Texture("obstacle.png");
+        obstacleSprites = new Array<>();
 
         batch = new SpriteBatch();
-        obstacleSprite = new Sprite(obstacle);
-        obstacleSprite.setSize(obstacle.getWidth(), obstacle.getHeight());
         birbSprite = new Sprite(birb);
         birbSprite.setSize(100, 100);
 
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
-        obstacleSprite.setPosition(worldWidth, 0);
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.getData().setScale(2f);
     }
+
+    public void createObstacle() {
+        Sprite obstacleSprite = new Sprite(obstacle);
+        obstacleSprite.setSize(obstacle.getWidth(), obstacle.getHeight());
+        obstacleSprite.setPosition(worldWidth, 0);
+        obstacleSprites.add(obstacleSprite);
+
+    };
 
     @Override
     public void show() {
@@ -102,7 +110,9 @@ public class FirstScreen implements Screen {
 
         birbSprite.draw(batch);
 
-        obstacleSprite.draw(batch);
+        for (Sprite obstacle : obstacleSprites) {
+            obstacle.draw(batch);
+        }
 
         font.draw(batch, "Score: " + game.getScore(), 10, 470);
 
@@ -140,7 +150,23 @@ public class FirstScreen implements Screen {
         velocity += gravity;
         birbSprite.translateY(velocity * delta);
 
-        obstacleSprite.translateX(obstacleSpeed);
+        for (int i = obstacleSprites.size -1; i >= 0; i--) {
+            Sprite obstacleSprite = obstacleSprites.get(i);
+            float obstacleWidth = obstacleSprite.getWidth();
+            float obstacleHeight = obstacleSprite.getHeight();
+
+            obstacleSprite.translateX(-200 * delta);
+
+            if (obstacleSprite.getX() < -obstacleWidth) {
+                obstacleSprites.removeIndex(i);
+            }
+        }
+
+        obstacleTimer += delta;
+        if (obstacleTimer > 4f) {
+            obstacleTimer = 0f;
+            createObstacle();
+        }
 
         float birdWidth = birb.getWidth();
         float birdHeight = birb.getHeight();

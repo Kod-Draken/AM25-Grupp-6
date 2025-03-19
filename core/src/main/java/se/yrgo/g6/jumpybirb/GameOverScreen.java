@@ -49,13 +49,14 @@ public class GameOverScreen implements Screen {
         String highscore;
         if (game.getScore() > game.getHighScore()) {
             highscore = "New best!: ";
+            game.setHighScore(game.getScore());
         }else {
             highscore = "Best: ";
         }
 
         batch.draw(gameOver, 0, 0, worldWidth, worldHeight);
         font.draw(batch, "Score: " + game.getScore(), 10, 470);
-        font.draw(batch, highscore + game.getScore(), 10, 440);
+        font.draw(batch, highscore + game.getHighScore(), 10, 440);
         batch.end();
     }
 
