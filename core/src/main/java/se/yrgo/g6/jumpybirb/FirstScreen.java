@@ -25,9 +25,11 @@ public class FirstScreen implements Screen {
     private Texture background;
     private Texture birb;
     private Texture obstacle;
+    private Texture floor;
 
     private SpriteBatch batch;
     private Sprite birbSprite;
+    private Sprite floorSprite;
 
     private BitmapFont font;
 
@@ -47,11 +49,16 @@ public class FirstScreen implements Screen {
         background = new Texture("background-WIDER.png");
         birb = new Texture("birb.png");
         //obstacle = new Texture("placeholder_obstacle.jpg");
+        floor = new Texture("floor.png");
 
         batch = new SpriteBatch();
         birbSprite = new Sprite(birb);
         birbSprite.setSize(100, 100);
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
+        floorSprite = new Sprite(floor);
+        floorSprite.setSize(floor.getWidth(), floor.getHeight() );
+        floorSprite.setPosition(0, 0);
+
 
         font = new BitmapFont();
         this.game = game;
@@ -86,7 +93,7 @@ public class FirstScreen implements Screen {
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         // Scrolling background
-        backgroundOffset -= 2;
+        backgroundOffset -= 0.5;
         if (backgroundOffset % (worldWidth * 2) == 0) {
             backgroundOffset = 0;
         }
@@ -96,6 +103,8 @@ public class FirstScreen implements Screen {
         // draw two backgrounds to achieve a seamless transition, move to private method?
         batch.draw(background, backgroundOffset, 0, worldWidth * 2, worldHeight);
         batch.draw(background, backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
+
+        floorSprite.draw(batch);
 
         birbSprite.draw(batch);
 
