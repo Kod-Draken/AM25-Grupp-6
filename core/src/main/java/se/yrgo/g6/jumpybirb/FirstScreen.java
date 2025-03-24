@@ -34,6 +34,7 @@ public class FirstScreen implements Screen {
     private BitmapFont font;
 
     private float backgroundOffset;
+    private float floorOffset;
 
     float velocity = 0f;
     final private float gravity = -30f;
@@ -46,7 +47,7 @@ public class FirstScreen implements Screen {
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
-        background = new Texture("background-WIDER.png");
+        background = new Texture("background-WIDER2.png");
         birb = new Texture("birb.png");
         //obstacle = new Texture("placeholder_obstacle.jpg");
         floor = new Texture("floor.png");
@@ -65,6 +66,7 @@ public class FirstScreen implements Screen {
         font.setColor(Color.WHITE);
         font.getData().setScale(2f);
         backgroundOffset = 0;
+        floorOffset = 0;
 
     }
 
@@ -98,13 +100,22 @@ public class FirstScreen implements Screen {
             backgroundOffset = 0;
         }
 
+        // Scrolling floor
+        floorOffset -= 1.5;
+        if (floorOffset % (worldHeight) == 0) {
+            floorOffset = 0;
+        }
+
         batch.begin();
 
         // draw two backgrounds to achieve a seamless transition, move to private method?
         batch.draw(background, backgroundOffset, 0, worldWidth * 2, worldHeight);
         batch.draw(background, backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
 
-        floorSprite.draw(batch);
+        batch.draw(floor, floorOffset,0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, floorOffset + (worldHeight * 2), 0, worldWidth * 2, floor.getHeight());
+
+        // floorSprite.draw(batch);
 
         birbSprite.draw(batch);
 
