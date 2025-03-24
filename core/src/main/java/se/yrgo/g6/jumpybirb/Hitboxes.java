@@ -21,20 +21,6 @@ public class Hitboxes {
         hitbox.set(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
     }
 
-    public float getX() {
-        return hitbox.getX();
-    }
-    public float getY() {
-        return hitbox.getY();
-    }
-    public float getHeight() {
-        return hitbox.getHeight();
-    }
-
-    public float getWidth() {
-        return hitbox.getWidth();
-    }
-
     public boolean overlaps(Hitboxes e) {
         return hitbox.overlaps(e.hitbox);
     }

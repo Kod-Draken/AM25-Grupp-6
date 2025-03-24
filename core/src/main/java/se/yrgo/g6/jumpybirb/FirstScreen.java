@@ -18,14 +18,13 @@ public class FirstScreen implements Screen {
     private BirbGame game;
     private FitViewport viewport;
     private Birb birb;
+    private Obstacle obstacle;
 
     private float delta;
     private float worldWidth;
     private float worldHeight;
 
     private Texture background;
-    private Texture birb;
-    private Texture obstacle;
 
     private SpriteBatch batch;
     private Sprite birbSprite;
@@ -39,22 +38,22 @@ public class FirstScreen implements Screen {
 
     // Obstacles
     final private float obstacleSpeed = -5f;
-    private Array<Sprite> obstacleSprites;
+    Array<Sprite> obstacleSprites;
     private float obstacleTimer;
 
     private BitmapFont font;
 
-    public FirstScreen(BirbGame game, FitViewport viewport, Birb birb) {
+    public FirstScreen(BirbGame game, FitViewport viewport, Birb birb, Obstacle obstacle) {
         this.game = game;
         this.viewport = viewport;
         this.birb = birb;
+        this.obstacle = obstacle;
 
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
         background = new Texture("background.png");
-        obstacle = new Texture("obstacle.png");
-        obstacleSprites = new Array<>();
+        obstacleSprites = obstacle.getObstacleSprites();
         obstacleHitbox = new Hitboxes();
 
         batch = new SpriteBatch();
@@ -67,14 +66,6 @@ public class FirstScreen implements Screen {
         font.setColor(Color.WHITE);
         font.getData().setScale(2f);
     }
-
-    public void createObstacle() {
-        Sprite obstacleSprite = new Sprite(obstacle);
-        obstacleSprite.setSize(obstacle.getWidth(), obstacle.getHeight());
-        obstacleSprite.setPosition(worldWidth, 0);
-        obstacleSprites.add(obstacleSprite);
-
-    };
 
     @Override
     public void show() {
@@ -166,7 +157,7 @@ public class FirstScreen implements Screen {
         obstacleTimer += delta;
         if (obstacleTimer > 4f) {
             obstacleTimer = 0f;
-            createObstacle();
+            obstacle.createObstacle(worldWidth, 0);
         }
 
         birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));

@@ -17,6 +17,7 @@ public class GameOverScreen implements Screen {
     private BirbGame game;
     private FitViewport viewport;
     private Birb birb;
+    private Obstacle obstacle;
 
     private float worldWidth;
     private float worldHeight;
@@ -29,10 +30,11 @@ public class GameOverScreen implements Screen {
 
     private BitmapFont font;
 
-    public GameOverScreen(BirbGame game, FitViewport viewport, Birb birb) {
+    public GameOverScreen(BirbGame game, FitViewport viewport, Birb birb, Obstacle obstacle) {
         this.game = game;
         this.viewport = viewport;
         this.birb = birb;
+        this.obstacle = obstacle;
 
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
@@ -65,6 +67,10 @@ public class GameOverScreen implements Screen {
         batch.begin();
         batch.draw(background, 0, 0, worldWidth, worldHeight);
         birbSprite.draw(batch);
+
+        for (Sprite obstacle : obstacle.getObstacleSprites()) {
+            obstacle.draw(batch);
+        }
 
         // Depending on
         String highscore;

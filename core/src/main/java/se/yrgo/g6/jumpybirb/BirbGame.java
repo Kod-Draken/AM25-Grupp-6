@@ -11,6 +11,7 @@ public class BirbGame extends Game {
     private int highScore;
     private Screen currentScreen;
     private Birb birb;
+    private Obstacle obstacle;
 
     @Override
     public void create() {
@@ -20,13 +21,14 @@ public class BirbGame extends Game {
 
     public void newGame() {
         birb = new Birb();
-        currentScreen = new FirstScreen(this, viewport, birb);
+        obstacle = new Obstacle();
+        currentScreen = new FirstScreen(this, viewport, birb, obstacle);
         setScreen(currentScreen);
         this.score = 0;
     }
 
     public void gameOver() {
-        setScreen(new GameOverScreen(this, viewport, birb));
+        setScreen(new GameOverScreen(this, viewport, birb, obstacle));
     }
 
     public void pauseGame() {
