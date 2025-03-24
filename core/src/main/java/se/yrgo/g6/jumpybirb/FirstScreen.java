@@ -95,25 +95,25 @@ public class FirstScreen implements Screen {
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         // Scrolling background
-        backgroundOffset -= 0.5;
+        backgroundOffset += 1;
         if (backgroundOffset % (worldWidth * 2) == 0) {
             backgroundOffset = 0;
         }
 
         // Scrolling floor
-        floorOffset -= 1.5;
-        if (floorOffset % (worldHeight) == 0) {
+        floorOffset += 2;
+        if (floorOffset % worldWidth == 0) {
             floorOffset = 0;
         }
 
         batch.begin();
 
         // draw two backgrounds to achieve a seamless transition, move to private method?
-        batch.draw(background, backgroundOffset, 0, worldWidth * 2, worldHeight);
-        batch.draw(background, backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
+        batch.draw(background, - backgroundOffset, 0, worldWidth * 2, worldHeight);
+        batch.draw(background, - backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
 
-        batch.draw(floor, floorOffset,0, worldWidth * 2, floor.getHeight());
-        batch.draw(floor, floorOffset + (worldHeight * 2), 0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, - floorOffset,0, worldWidth, floor.getHeight());
+        batch.draw(floor, - floorOffset + worldWidth, 0, worldWidth, floor.getHeight());
 
         // floorSprite.draw(batch);
 
