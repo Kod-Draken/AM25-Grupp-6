@@ -8,9 +8,9 @@ public class Birb {
     private Sprite birbSprite;
 
     public Birb() {
-        birb = new Texture("Birb.png");
+        birb = new Texture("birb.png");
         birbSprite = new Sprite(birb);
-        birbSprite.setSize(100, 100);
+        birbSprite.setSize(93, 58  );
     }
 
     public Sprite getBirbSprite() {

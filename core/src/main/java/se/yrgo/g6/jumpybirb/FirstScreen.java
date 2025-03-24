@@ -86,7 +86,7 @@ public class FirstScreen implements Screen {
                 flapFrames[index++] = tmp[i][j];
             }
         }
-        flapAnimation = new Animation<TextureRegion>(0.1f, flapFrames);
+        flapAnimation = new Animation<TextureRegion>(0.05f, flapFrames);
         stateTime = 0f;
     }
 
@@ -145,6 +145,7 @@ public class FirstScreen implements Screen {
             // For now score is increased when jumping.
             game.setScore(game.getScore() + 1);
             isJumping = true;
+            stateTime = 0f;
         }
         // When pressing ESC, pause game and hide birb
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
@@ -155,6 +156,7 @@ public class FirstScreen implements Screen {
 
     /**
      * Checks if the player hits the lowest allowed coordinate.
+     * or if collision is made with an obstacle.
      * @return true if coordinate is reached, otherwise false.
      */
     private boolean isGameOver() {
@@ -175,6 +177,10 @@ public class FirstScreen implements Screen {
         birbSprite.translateY(velocity * delta);
         birbHitbox = new Hitboxes(birbSprite);
 
+        if (isJumping && flapAnimation.isAnimationFinished(stateTime)) {
+            isJumping = false;
+        }
+
         for (int i = obstacleSprites.size -1; i >= 0; i--) {
             Sprite obstacleSprite = obstacleSprites.get(i);
             float obstacleWidth = obstacleSprite.getWidth();
@@ -194,13 +200,8 @@ public class FirstScreen implements Screen {
             obstacle.createObstacle(worldWidth, 0);
         }
 
-        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));
+        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), 45,worldHeight - birbSprite.getHeight()));
 
-        animationTimer += delta;
-        if (animationTimer >= 0.5){
-            animationTimer = 0;
-            isJumping = false;
-        }
     }
 
     @Override
