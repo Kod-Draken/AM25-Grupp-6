@@ -15,10 +15,10 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
-    private FitViewport viewport;
     private BirbGame game;
-    private float delta;
+    private FitViewport viewport;
 
+    private float delta;
     private float worldWidth;
     private float worldHeight;
 
@@ -29,7 +29,6 @@ public class FirstScreen implements Screen {
     private SpriteBatch batch;
     private Sprite birbSprite;
 
-    // Gravity and jumping
     float velocity = 0f;
     final private float gravity = -30f;
     final private float jumpStrenght = 500f;
@@ -45,6 +44,9 @@ public class FirstScreen implements Screen {
         this.game = game;
         this.viewport = viewport;
 
+        worldWidth = viewport.getWorldWidth();
+        worldHeight = viewport.getWorldHeight();
+
         background = new Texture("background.png");
         birb = new Texture("birb.png");
         obstacle = new Texture("obstacle.png");
@@ -53,9 +55,6 @@ public class FirstScreen implements Screen {
         batch = new SpriteBatch();
         birbSprite = new Sprite(birb);
         birbSprite.setSize(100, 100);
-
-        worldWidth = viewport.getWorldWidth();
-        worldHeight = viewport.getWorldHeight();
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
 
         font = new BitmapFont();
@@ -89,16 +88,6 @@ public class FirstScreen implements Screen {
         draw();
     }
 
-    @Override
-    public void resize(int width, int height) {
-        // Resize your screen here. The parameters represent the new window size.
-        viewport.update(width, height, true);
-    }
-
-    @Override
-    public void pause() {
-        // Invoked when your application is paused.
-    }
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
@@ -173,6 +162,17 @@ public class FirstScreen implements Screen {
 
         birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));
 
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        // Resize your screen here. The parameters represent the new window size.
+        viewport.update(width, height, true);
+    }
+
+    @Override
+    public void pause() {
+        // Invoked when your application is paused.
     }
 
     @Override
