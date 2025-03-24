@@ -29,6 +29,9 @@ public class FirstScreen implements Screen {
     private SpriteBatch batch;
     private Sprite birbSprite;
 
+    private Hitboxes birbHitbox;
+    private Hitboxes obstacleHitbox;
+
     float velocity = 0f;
     final private float gravity = -30f;
     final private float jumpStrenght = 500f;
@@ -51,11 +54,14 @@ public class FirstScreen implements Screen {
         birb = new Texture("birb.png");
         obstacle = new Texture("obstacle.png");
         obstacleSprites = new Array<>();
+        obstacleHitbox = new Hitboxes();
 
         batch = new SpriteBatch();
         birbSprite = new Sprite(birb);
         birbSprite.setSize(100, 100);
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
+        birbHitbox = new Hitboxes();
+
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
@@ -126,6 +132,9 @@ public class FirstScreen implements Screen {
      * @return true if coordinate is reached, otherwise false.
      */
     private boolean isGameOver() {
+        if (birbHitbox.overlaps(obstacleHitbox)) {
+            return true;
+        }
         return birbSprite.getY() < -30f;
     }
 
@@ -138,6 +147,7 @@ public class FirstScreen implements Screen {
 
         velocity += gravity;
         birbSprite.translateY(velocity * delta);
+        birbHitbox = new Hitboxes(birbSprite);
 
         for (int i = obstacleSprites.size -1; i >= 0; i--) {
             Sprite obstacleSprite = obstacleSprites.get(i);
@@ -145,6 +155,7 @@ public class FirstScreen implements Screen {
             float obstacleHeight = obstacleSprite.getHeight();
 
             obstacleSprite.translateX(-200 * delta);
+            obstacleHitbox.setHitbox(obstacleSprite);
 
             if (obstacleSprite.getX() < -obstacleWidth) {
                 obstacleSprites.removeIndex(i);
