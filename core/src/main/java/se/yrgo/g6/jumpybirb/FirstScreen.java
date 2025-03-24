@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class FirstScreen implements Screen {
     private BirbGame game;
     private FitViewport viewport;
+    private Birb birb;
 
     private float delta;
     private float worldWidth;
@@ -43,22 +44,21 @@ public class FirstScreen implements Screen {
 
     private BitmapFont font;
 
-    public FirstScreen(BirbGame game, FitViewport viewport) {
+    public FirstScreen(BirbGame game, FitViewport viewport, Birb birb) {
         this.game = game;
         this.viewport = viewport;
+        this.birb = birb;
 
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
         background = new Texture("background.png");
-        birb = new Texture("birb.png");
         obstacle = new Texture("obstacle.png");
         obstacleSprites = new Array<>();
         obstacleHitbox = new Hitboxes();
 
         batch = new SpriteBatch();
-        birbSprite = new Sprite(birb);
-        birbSprite.setSize(100, 100);
+        birbSprite = birb.getBirbSprite();
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
         birbHitbox = new Hitboxes();
 
@@ -97,6 +97,7 @@ public class FirstScreen implements Screen {
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
+
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
@@ -122,8 +123,8 @@ public class FirstScreen implements Screen {
         }
         // When pressing ESC, pause game and hide birb
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            birbSprite.setSize(0, 0);
             game.pauseGame();
-            birbSprite.setSize(0,0);
         }
     }
 
@@ -167,9 +168,6 @@ public class FirstScreen implements Screen {
             obstacleTimer = 0f;
             createObstacle();
         }
-
-        float birdWidth = birb.getWidth();
-        float birdHeight = birb.getHeight();
 
         birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));
 
