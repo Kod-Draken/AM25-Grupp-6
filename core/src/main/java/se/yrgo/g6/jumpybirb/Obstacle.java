@@ -10,6 +10,10 @@ public class Obstacle {
     private Texture obstacleUSD;
     private Array<Sprite> obstacleSprites;
     private Sprite obstacleSprite;
+    private Sprite obstacleSpriteUSD;
+    private float random;
+    private float randomUSD;
+
 
     public Obstacle() {
         obstacle = new Texture("obstacle.png");
@@ -17,18 +21,17 @@ public class Obstacle {
         obstacleSprites = new Array<>();
     }
 
-    public void createObstacle(float x) {
+    public void createObstacle(float x, float y) {
         obstacleSprite = new Sprite(obstacle);
-        obstacleSprite.setSize(100, 200 * MathUtils.random(0.9f, 1.2f));
+        obstacleSpriteUSD = new Sprite(obstacleUSD);
+        random = 150 * MathUtils.random(0.8f, 1.15f);
+        randomUSD = 150 * MathUtils.random(0.8f, 1.15f);
+        obstacleSprite.setSize(100, random);
+        obstacleSpriteUSD.setSize(100, randomUSD);
         obstacleSprite.setPosition(x, 0);
+        obstacleSpriteUSD.setPosition(x, y-obstacleSpriteUSD.getHeight());
         obstacleSprites.add(obstacleSprite);
-    }
-
-    public void createObstacleUSD(float x, float y) {
-        obstacleSprite = new Sprite(obstacleUSD);
-        obstacleSprite.setSize(100, 300 * MathUtils.random(0.9f, 1.2f));
-        obstacleSprite.setPosition(x, y - obstacleSprite.getHeight());
-        obstacleSprites.add(obstacleSprite);
+        obstacleSprites.add(obstacleSpriteUSD);
     }
 
     public Array<Sprite> getObstacleSprites() {

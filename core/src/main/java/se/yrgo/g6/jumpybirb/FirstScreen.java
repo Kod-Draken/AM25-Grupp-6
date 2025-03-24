@@ -158,7 +158,7 @@ public class FirstScreen implements Screen {
         if (obstacleTimer > 2f) {
             obstacleTimer = 0f;
             // Creates upside down obstacles
-            obstacle.createObstacleUSD(worldWidth, worldHeight);
+            obstacle.createObstacle(worldWidth, worldHeight);
         }
 
         birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));
