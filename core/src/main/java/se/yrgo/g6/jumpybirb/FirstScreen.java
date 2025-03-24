@@ -218,7 +218,7 @@ public class FirstScreen implements Screen {
     @Override
     public void resume() {
         // When resuming game, show birb and jump once
-        birbSprite.setSize(100, 100);
+        birbSprite.setSize(93, 58);
         velocity = jumpStrenght;
     }
 
