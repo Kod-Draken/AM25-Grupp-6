@@ -17,4 +17,8 @@ public class Birb {
         return birbSprite;
     }
 
+    public void setBirbSprite(Sprite birbSprite) {
+        this.birbSprite = birbSprite;
+    }
+
 }
