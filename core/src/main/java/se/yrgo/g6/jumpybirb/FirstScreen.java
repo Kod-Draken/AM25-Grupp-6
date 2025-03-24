@@ -16,13 +16,13 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class FirstScreen implements Screen {
     private BirbGame game;
     private FitViewport viewport;
+    private Birb birb;
 
     private float delta;
     private float worldWidth;
     private float worldHeight;
 
     private Texture background;
-    private Texture birb;
     private Texture obstacle;
 
     private SpriteBatch batch;
@@ -34,20 +34,19 @@ public class FirstScreen implements Screen {
     final private float gravity = -30f;
     final private float jumpStrenght = 500f;
 
-    public FirstScreen(BirbGame game, FitViewport viewport) {
+    public FirstScreen(BirbGame game, FitViewport viewport, Birb birb) {
         this.game = game;
         this.viewport = viewport;
+        this.birb = birb;
 
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
         background = new Texture("background.png");
-        birb = new Texture("birb.png");
         //obstacle = new Texture("placeholder_obstacle.jpg");
 
         batch = new SpriteBatch();
-        birbSprite = new Sprite(birb);
-        birbSprite.setSize(100, 100);
+        birbSprite = birb.getBirbSprite();
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
 
         font = new BitmapFont();
@@ -71,6 +70,7 @@ public class FirstScreen implements Screen {
         jump();
         logic();
         draw();
+        System.out.println("Birb Y: " + birbSprite.getY());
     }
 
     private void draw() {
@@ -93,8 +93,8 @@ public class FirstScreen implements Screen {
         }
         // When pressing ESC, pause game and hide birb
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            birbSprite.setSize(0, 0);
             game.pauseGame();
-            birbSprite.setSize(0,0);
         }
     }
 
@@ -103,6 +103,10 @@ public class FirstScreen implements Screen {
      * @return true if coordinate is reached, otherwise false.
      */
     private boolean isGameOver() {
+        //die on ceiling *wip
+        if (birbSprite.getY() > 400f) {
+            return true;
+        }
         return birbSprite.getY() < -30f;
     }
 
@@ -115,9 +119,6 @@ public class FirstScreen implements Screen {
 
         velocity += gravity;
         birbSprite.translateY(velocity * delta);
-
-        float birdWidth = birb.getWidth();
-        float birdHeight = birb.getHeight();
 
         birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));
 
