@@ -3,6 +3,7 @@ package se.yrgo.g6.jumpybirb;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,12 +16,13 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class GameOverScreen implements Screen {
     private BirbGame game;
     private FitViewport viewport;
+    private Birb birb;
+    private Obstacle obstacle;
 
     private float worldWidth;
     private float worldHeight;
 
     private Texture background;
-    private Texture birb;
     private Texture gameOver;
 
     private SpriteBatch batch;
@@ -28,21 +30,21 @@ public class GameOverScreen implements Screen {
 
     private BitmapFont font;
 
-    public GameOverScreen(BirbGame game, FitViewport viewport) {
+    public GameOverScreen(BirbGame game, FitViewport viewport, Birb birb, Obstacle obstacle) {
         this.game = game;
         this.viewport = viewport;
+        this.birb = birb;
+        this.obstacle = obstacle;
 
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
         background = new Texture("background.png");
-        birb = new Texture("birb.png");
         gameOver = new Texture("gameover.png");
 
         batch = new SpriteBatch();
-        birbSprite = new Sprite(birb);
-        birbSprite.setSize(100, 100);
-        birbSprite.setPosition(worldWidth / 2 -50f,  -30f);
+        birbSprite = birb.getBirbSprite();
+        birbSprite.setPosition(worldWidth / 2 -50f, birbSprite.getY());
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
@@ -65,6 +67,10 @@ public class GameOverScreen implements Screen {
         batch.begin();
         batch.draw(background, 0, 0, worldWidth, worldHeight);
         birbSprite.draw(batch);
+
+        for (Sprite obstacle : obstacle.getObstacleSprites()) {
+            obstacle.draw(batch);
+        }
 
         // Depending on
         String highscore;
