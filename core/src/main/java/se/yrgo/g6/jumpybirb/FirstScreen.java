@@ -5,9 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -43,6 +41,14 @@ public class FirstScreen implements Screen {
 
     private BitmapFont font;
 
+    //Animation
+    Texture birbFlapSheet;
+    Animation<TextureRegion> flapAnimation;
+    float stateTime;
+    private static final int COLS = 5;
+    private boolean isJumping;
+    private float animationTimer = 0;
+
     public FirstScreen(BirbGame game, FitViewport viewport, Birb birb, Obstacle obstacle) {
         this.game = game;
         this.viewport = viewport;
@@ -61,10 +67,27 @@ public class FirstScreen implements Screen {
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
         birbHitbox = new Hitboxes();
 
-
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.getData().setScale(2f);
+
+        //Animations
+        birbFlapSheet = new Texture("birbAnimationSheet.png");
+        TextureRegion[][] tmp = TextureRegion.split(birbFlapSheet,
+            birbFlapSheet.getWidth() / COLS,
+            birbFlapSheet.getHeight());
+        isJumping = false;
+
+
+        TextureRegion[] flapFrames = new TextureRegion[COLS];
+        int index = 0;
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < COLS; j++) {
+                flapFrames[index++] = tmp[i][j];
+            }
+        }
+        flapAnimation = new Animation<TextureRegion>(0.05f, flapFrames);
+        stateTime = 0f;
     }
 
     @Override
@@ -74,6 +97,10 @@ public class FirstScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        // Animations
+        stateTime += delta;
+
+
         // Draw your screen here. "delta" is the time since last render in seconds.
         if (isGameOver()) {
             dispose();
@@ -95,7 +122,13 @@ public class FirstScreen implements Screen {
 
         batch.draw(background, 0, 0, worldWidth, worldHeight);
 
-        birbSprite.draw(batch);
+        // animation
+
+        if (isJumping){
+        TextureRegion currentFrame = flapAnimation.getKeyFrame(stateTime, true);
+        batch.draw(currentFrame, birbSprite.getX(), birbSprite.getY());
+        }
+        else birbSprite.draw(batch);
 
         for (Sprite obstacle : obstacleSprites) {
             obstacle.draw(batch);
@@ -111,6 +144,8 @@ public class FirstScreen implements Screen {
             velocity = jumpStrenght;
             // For now score is increased when jumping.
             game.setScore(game.getScore() + 1);
+            isJumping = true;
+            stateTime = 0f;
         }
         // When pressing ESC, pause game and hide birb
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
@@ -121,13 +156,14 @@ public class FirstScreen implements Screen {
 
     /**
      * Checks if the player hits the lowest allowed coordinate.
+     * or if collision is made with an obstacle.
      * @return true if coordinate is reached, otherwise false.
      */
     private boolean isGameOver() {
         if (birbHitbox.overlaps(obstacleHitbox)) {
             return true;
         }
-        return birbSprite.getY() < -30f;
+        return birbSprite.getY() < 1f;
     }
 
     private void logic() {
@@ -140,6 +176,10 @@ public class FirstScreen implements Screen {
         velocity += gravity;
         birbSprite.translateY(velocity * delta);
         birbHitbox = new Hitboxes(birbSprite);
+
+        if (isJumping && flapAnimation.isAnimationFinished(stateTime)) {
+            isJumping = false;
+        }
 
         for (int i = obstacleSprites.size -1; i >= 0; i--) {
             Sprite obstacleSprite = obstacleSprites.get(i);
@@ -160,7 +200,7 @@ public class FirstScreen implements Screen {
             obstacle.createObstacle(worldWidth, 0);
         }
 
-        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));
+        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), 0,worldHeight - birbSprite.getHeight()));
 
     }
 
@@ -178,7 +218,7 @@ public class FirstScreen implements Screen {
     @Override
     public void resume() {
         // When resuming game, show birb and jump once
-        birbSprite.setSize(100, 100);
+        birbSprite.setSize(93, 58);
         velocity = jumpStrenght;
     }
 
