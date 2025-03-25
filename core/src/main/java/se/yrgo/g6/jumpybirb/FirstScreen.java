@@ -45,7 +45,7 @@ public class FirstScreen implements Screen {
     Texture birbFlapSheet;
     Animation<TextureRegion> flapAnimation;
     float stateTime;
-    private static final int COLS = 4;
+    private static final int COLS = 5;
     private boolean isJumping;
     private float animationTimer = 0;
 
@@ -163,7 +163,7 @@ public class FirstScreen implements Screen {
         if (birbHitbox.overlaps(obstacleHitbox)) {
             return true;
         }
-        return birbSprite.getY() < -30f;
+        return birbSprite.getY() < 1f;
     }
 
     private void logic() {
@@ -200,7 +200,7 @@ public class FirstScreen implements Screen {
             obstacle.createObstacle(worldWidth, 0);
         }
 
-        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), 45,worldHeight - birbSprite.getHeight()));
+        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), 0,worldHeight - birbSprite.getHeight()));
 
     }
 
