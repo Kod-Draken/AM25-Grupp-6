@@ -82,8 +82,8 @@ public class GameOverScreen implements Screen {
         }
 
         batch.draw(gameOver, 0, 0, worldWidth, worldHeight);
-        font.draw(batch, "Score: " + game.getScore(), 10, 470);
-        font.draw(batch, highscore + game.getHighScore(), 10, 440);
+        font.draw(batch, "Score: " + game.getScore(), 250, 470, 300, Align.center, true );
+        font.draw(batch, highscore + game.getHighScore(), 250, 440, 300, Align.center, true);
         batch.end();
     }
 

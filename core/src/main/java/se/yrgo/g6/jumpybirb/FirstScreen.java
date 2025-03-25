@@ -77,7 +77,6 @@ public class FirstScreen implements Screen {
         floorSprite.setSize(floor.getWidth(), floor.getHeight() );
         floorSprite.setPosition(0, 0);
 
-
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.getData().setScale(2f);
@@ -85,13 +84,12 @@ public class FirstScreen implements Screen {
         backgroundOffset = 0;
         floorOffset = 0;
 
-        //Animations
+        //Animations needs cleaning
         birbFlapSheet = new Texture("birbAnimationSheet.png");
         TextureRegion[][] tmp = TextureRegion.split(birbFlapSheet,
             birbFlapSheet.getWidth() / COLS,
             birbFlapSheet.getHeight());
         isJumping = false;
-
 
         TextureRegion[] flapFrames = new TextureRegion[COLS];
         int index = 0;
@@ -111,9 +109,8 @@ public class FirstScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // Animations
+        // Time for animation
         stateTime += delta;
-
 
         // Draw your screen here. "delta" is the time since last render in seconds.
         if (isGameOver()) {
@@ -132,50 +129,42 @@ public class FirstScreen implements Screen {
 
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
-        // Scrolling background
-        backgroundOffset -= 0.5;
+        // Scrolling background (move to logic?)
+        backgroundOffset += 1; // Make final and member?
         if (backgroundOffset % (worldWidth * 2) == 0) {
             backgroundOffset = 0;
         }
 
-        // Scrolling floor
-        floorOffset -= 1.5;
-        if (floorOffset % (worldHeight) == 0) {
+        // Scrolling floor (move to logic?)
+        floorOffset += 2; // Make final and member?
+        if (floorOffset % (worldWidth) == 0) {
             floorOffset = 0;
         }
 
         batch.begin();
 
-        // draw two backgrounds to achieve a seamless transition, move to private method?
-        batch.draw(background, backgroundOffset, 0, worldWidth * 2, worldHeight);
-        batch.draw(background, backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
+        // Draw two backgrounds to achieve a seamless transition, move to private method?
+        batch.draw(background, -backgroundOffset, 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
 
-        batch.draw(floor, floorOffset,0, worldWidth * 2, floor.getHeight());
-        batch.draw(floor, floorOffset + (worldHeight * 2), 0, worldWidth * 2, floor.getHeight());
+        // Draw obstacles
+        for (Sprite obstacle : obstacleSprites) {
+            obstacle.draw(batch);
+        }
 
-        // floorSprite.draw(batch);
+        // Draw two floors to achieve seamless transition.
+        batch.draw(floor, -floorOffset,0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -floorOffset + (worldWidth), 0, worldWidth * 2, floor.getHeight());
 
-        birbSprite.draw(batch);
-
-        // move to private method?
+        // Score
         font.draw(batch, "Score: " + game.getScore(), 250, 470, 300, Align.center, true);
 
-
-        batch.draw(background, 0, 0, worldWidth, worldHeight);
-
-        // animation
-
+        // Animations for bird
         if (isJumping){
         TextureRegion currentFrame = flapAnimation.getKeyFrame(stateTime, true);
         batch.draw(currentFrame, birbSprite.getX(), birbSprite.getY());
         }
         else birbSprite.draw(batch);
-
-        for (Sprite obstacle : obstacleSprites) {
-            obstacle.draw(batch);
-        }
-
-        font.draw(batch, "Score: " + game.getScore(), 10, 470);
 
         batch.end();
     }
