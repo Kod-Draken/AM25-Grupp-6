@@ -81,9 +81,6 @@ public class FirstScreen implements Screen {
         font.setColor(Color.WHITE);
         font.getData().setScale(2f);
 
-        backgroundOffset = 0;
-        floorOffset = 0;
-
         //Animations needs cleaning
         birbFlapSheet = new Texture("birbAnimationSheet.png");
         TextureRegion[][] tmp = TextureRegion.split(birbFlapSheet,
