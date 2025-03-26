@@ -12,6 +12,8 @@ public class BirbGame extends Game {
     private Screen currentScreen;
     private Birb birb;
     private Obstacle obstacle;
+    int backgroundOffset = 0;
+    int floorOffset = 0;
 
     @Override
     public void create() {

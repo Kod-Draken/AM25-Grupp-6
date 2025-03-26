@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -23,12 +24,17 @@ public class FirstScreen implements Screen {
     private float worldHeight;
 
     private Texture background;
+    private Texture floor;
 
     private SpriteBatch batch;
     private Sprite birbSprite;
+    private Sprite floorSprite;
 
     private Hitboxes birbHitbox;
     private Hitboxes obstacleHitbox;
+
+    private float backgroundOffset;
+    private float floorOffset;
 
     float velocity = 0f;
     final private float gravity = -30f;
@@ -58,26 +64,29 @@ public class FirstScreen implements Screen {
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
-        background = new Texture("background.png");
+        background = new Texture("background-WIDER2.png");
         obstacleSprites = obstacle.getObstacleSprites();
         obstacleHitbox = new Hitboxes();
+        floor = new Texture("floor.png");
 
         batch = new SpriteBatch();
         birbSprite = birb.getBirbSprite();
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
         birbHitbox = new Hitboxes();
+        floorSprite = new Sprite(floor);
+        floorSprite.setSize(floor.getWidth(), floor.getHeight() );
+        floorSprite.setPosition(0, 0);
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.getData().setScale(2f);
 
-        //Animations
+        //Animations needs cleaning
         birbFlapSheet = new Texture("birbAnimationSheet.png");
         TextureRegion[][] tmp = TextureRegion.split(birbFlapSheet,
             birbFlapSheet.getWidth() / COLS,
             birbFlapSheet.getHeight());
         isJumping = false;
-
 
         TextureRegion[] flapFrames = new TextureRegion[COLS];
         int index = 0;
@@ -97,9 +106,8 @@ public class FirstScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // Animations
+        // Time for animation
         stateTime += delta;
-
 
         // Draw your screen here. "delta" is the time since last render in seconds.
         if (isGameOver()) {
@@ -118,23 +126,42 @@ public class FirstScreen implements Screen {
 
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
+        // Scrolling background (move to logic?)
+        backgroundOffset += 1; // Make final and member?
+        if (backgroundOffset % (worldWidth * 2) == 0) {
+            backgroundOffset = 0;
+        }
+
+        // Scrolling floor (move to logic?)
+        floorOffset += 2; // Make final and member?
+        if (floorOffset % (worldWidth) == 0) {
+            floorOffset = 0;
+        }
+
         batch.begin();
 
-        batch.draw(background, 0, 0, worldWidth, worldHeight);
+        // Draw two backgrounds to achieve a seamless transition, move to private method?
+        batch.draw(background, -backgroundOffset, 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
 
-        // animation
+        // Draw obstacles
+        for (Sprite obstacle : obstacleSprites) {
+            obstacle.draw(batch);
+        }
 
+        // Draw two floors to achieve seamless transition.
+        batch.draw(floor, -floorOffset,0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -floorOffset + (worldWidth), 0, worldWidth * 2, floor.getHeight());
+
+        // Score
+        font.draw(batch, "Score: " + game.getScore(), 250, 470, 300, Align.center, true);
+
+        // Animations for bird
         if (isJumping){
         TextureRegion currentFrame = flapAnimation.getKeyFrame(stateTime, true);
         batch.draw(currentFrame, birbSprite.getX(), birbSprite.getY());
         }
         else birbSprite.draw(batch);
-
-        for (Sprite obstacle : obstacleSprites) {
-            obstacle.draw(batch);
-        }
-
-        font.draw(batch, "Score: " + game.getScore(), 10, 470);
 
         batch.end();
     }
