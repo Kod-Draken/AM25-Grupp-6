@@ -7,11 +7,14 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class BirbGame extends Game {
     private FitViewport viewport = new FitViewport(800, 480);
-    private int score;
-    private int highScore;
     private Screen currentScreen;
+
     private Birb birb;
     private Obstacle obstacle;
+
+    private int score;
+    private int highScore;
+
     int backgroundOffset = 0;
     int floorOffset = 0;
 
@@ -24,7 +27,7 @@ public class BirbGame extends Game {
     public void newGame() {
         birb = new Birb();
         obstacle = new Obstacle();
-        currentScreen = new FirstScreen(this, viewport, birb, obstacle);
+        currentScreen = new GameScreen(this, viewport, birb, obstacle);
         setScreen(currentScreen);
         this.score = 0;
     }
@@ -54,7 +57,4 @@ public class BirbGame extends Game {
     public void setHighScore(int highScore) {
         this.highScore = highScore;
     }
-
-
-
 }

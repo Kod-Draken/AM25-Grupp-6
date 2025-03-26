@@ -44,7 +44,7 @@ public class GameOverScreen implements Screen {
 
         batch = new SpriteBatch();
         birbSprite = birb.getBirbSprite();
-        birbSprite.setPosition(worldWidth / 2 -50f, birbSprite.getY());
+        birbSprite.setPosition(worldWidth / 2 - birbSprite.getWidth() / 2, birbSprite.getY());
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
