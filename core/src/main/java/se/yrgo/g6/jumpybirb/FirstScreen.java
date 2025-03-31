@@ -30,6 +30,7 @@ public class FirstScreen implements Screen {
     private Sprite birbSprite;
 
     private Hitboxes birbHitbox;
+    private Array<Hitboxes> obstacleHitboxes;
     private Hitboxes obstacleHitbox;
 
     float velocity = 0f;
@@ -43,7 +44,13 @@ public class FirstScreen implements Screen {
 
     private BitmapFont font;
 
+    private Texture red;
+
+    private boolean gameOver;
+
     public FirstScreen(BirbGame game, FitViewport viewport, Birb birb, Obstacle obstacle) {
+        red = new Texture("red.jpg");
+
         this.game = game;
         this.viewport = viewport;
         this.birb = birb;
@@ -54,17 +61,17 @@ public class FirstScreen implements Screen {
 
         background = new Texture("background.png");
         obstacleSprites = obstacle.getObstacleSprites();
-        obstacleHitbox = new Hitboxes();
+        obstacleHitboxes = obstacle.getObstacleHitboxes();
 
         batch = new SpriteBatch();
         birbSprite = birb.getBirbSprite();
         birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
-        birbHitbox = new Hitboxes();
-
 
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.getData().setScale(2f);
+
+        gameOver = false;
     }
 
     @Override
@@ -80,9 +87,9 @@ public class FirstScreen implements Screen {
             game.gameOver();
             return;
         }
-        jump();
         logic();
         draw();
+        input();
     }
 
     private void draw() {
@@ -97,16 +104,26 @@ public class FirstScreen implements Screen {
 
         birbSprite.draw(batch);
 
+        //Check hitboxes on obstacles
+        for (Hitboxes hitbox : obstacleHitboxes) {
+            batch.draw(red, hitbox.getX(), hitbox.getY(), hitbox.getWidth(), hitbox.getHeight());
+        }
+
+        //Draw obstacles
         for (Sprite obstacle : obstacleSprites) {
             obstacle.draw(batch);
         }
 
+        //Draw score counter
         font.draw(batch, "Score: " + game.getScore(), 10, 470);
+
+        //Draw Birb hitbox
+        batch.draw(red, birbSprite.getX(), birbSprite.getY(), birbSprite.getWidth(), birbSprite.getHeight());
 
         batch.end();
     }
 
-    private void jump() {
+    private void input() {
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             velocity = jumpStrenght;
             // For now score is increased when jumping.
@@ -124,7 +141,10 @@ public class FirstScreen implements Screen {
      * @return true if coordinate is reached, otherwise false.
      */
     private boolean isGameOver() {
-        if (birbHitbox.overlaps(obstacleHitbox)) {
+        if (obstacleHitboxes == null) {
+            return false;
+        }
+        if (gameOver) {
             return true;
         }
         return birbSprite.getY() < -30f;
@@ -141,27 +161,37 @@ public class FirstScreen implements Screen {
         birbSprite.translateY(velocity * delta);
         birbHitbox = new Hitboxes(birbSprite);
 
+        //Obstacles in the array moves from right to left, removes obstacles outside screen
         for (int i = obstacleSprites.size -1; i >= 0; i--) {
             Sprite obstacleSprite = obstacleSprites.get(i);
+            Hitboxes hitbox = obstacleHitboxes.get(i);
             float obstacleWidth = obstacleSprite.getWidth();
             float obstacleHeight = obstacleSprite.getHeight();
 
-            obstacleSprite.translateX(-200 * delta);
-            obstacleHitbox.setHitbox(obstacleSprite);
+            hitbox.setHitbox(obstacleSprite);
+            obstacleSprite.translateX(-200f * delta);
 
             if (obstacleSprite.getX() < -obstacleWidth) {
                 obstacleSprites.removeIndex(i);
+                obstacleHitboxes.removeIndex(i);
             }
         }
 
+        //Creates obstacles based on delta time
         obstacleTimer += delta;
         if (obstacleTimer > 2f) {
             obstacleTimer = 0f;
-            // Creates upside down obstacles
             obstacle.createObstacle(worldWidth, worldHeight);
         }
 
+        //Prevents Birb from exiting the screen on the Y-axis
         birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));
+
+        for (Hitboxes hitbox : obstacleHitboxes) {
+            if (birbHitbox.overlaps(hitbox)) {
+                gameOver = true;
+            }
+        }
 
     }
 
