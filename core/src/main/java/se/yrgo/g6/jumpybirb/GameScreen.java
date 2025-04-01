@@ -123,6 +123,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        // debug
+        // Gdx.app.log("Delta", "Gamescreen: " +delta);
+
         // Time for animation
         jumpAnimationTimer += delta;
 
@@ -138,7 +141,7 @@ public class GameScreen implements Screen {
 
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
-        viewport.apply();
+
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
@@ -165,8 +168,8 @@ public class GameScreen implements Screen {
     }
 
     private void drawFloor() {
-        batch.draw(floor, -floorOffset,0, worldWidth * 2, floor.getHeight());
-        batch.draw(floor, -floorOffset + (worldWidth), 0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -game.floorOffset,0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -game.floorOffset + (worldWidth), 0, worldWidth * 2, floor.getHeight());
     }
 
     private void drawObstacle() {
@@ -176,8 +179,8 @@ public class GameScreen implements Screen {
     }
 
     private void drawBackground() {
-        batch.draw(background, -backgroundOffset, 0, worldWidth * 2, worldHeight);
-        batch.draw(background, -backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -game.backgroundOffset, 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -game.backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
     }
 
     private void input() {
@@ -198,7 +201,7 @@ public class GameScreen implements Screen {
      * @return True if coordinate is reached or obstacle collision.
      */
     private boolean isGameOver() {
-        return birbHitbox.overlaps(obstacleHitbox) || birbSprite.getY() <= 40f;
+        return birbHitbox.overlaps(obstacleHitbox) || birbSprite.getY() <= floor.getHeight();
     }
 
     private void logic() {
@@ -222,7 +225,7 @@ public class GameScreen implements Screen {
         spawnObstacle();
 
         // Lock area in which the player can move.
-        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), 0,worldHeight - birbSprite.getHeight()));
+        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), floor.getHeight() -1,worldHeight - birbSprite.getHeight()));
 
     }
 
@@ -254,16 +257,16 @@ public class GameScreen implements Screen {
     }
 
     private void scrollFloor() {
-        floorOffset += FLOOR_SPEED;
-        if (floorOffset % (worldWidth) == 0) {
-            floorOffset = 0;
+        game.floorOffset += FLOOR_SPEED;
+        if (game.floorOffset % (worldWidth) == 0) {
+            game.floorOffset = 0;
         }
     }
 
     private void scrollBackground() {
-        backgroundOffset += BACKGROUND_SPEED;
-        if (backgroundOffset % (worldWidth * 2) == 0) {
-            backgroundOffset = 0;
+        game.backgroundOffset += BACKGROUND_SPEED;
+        if (game.backgroundOffset % (worldWidth * 2) == 0) {
+            game.backgroundOffset = 0;
         }
     }
 
@@ -293,7 +296,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        // Prepare your screen here.
+        viewport.apply();
     }
 
     @Override
