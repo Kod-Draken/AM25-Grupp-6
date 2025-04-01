@@ -22,7 +22,7 @@ public class BirbGame extends Game {
     public void newGame() {
         birb = new Birb();
         obstacle = new Obstacle();
-        currentScreen = new FirstScreen(this, viewport, birb, obstacle);
+        currentScreen = new GameScreen(this, viewport, birb, obstacle);
         setScreen(currentScreen);
         this.score = 0;
     }

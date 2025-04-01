@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /** First screen of the application. Displayed after the application is created. */
-public class FirstScreen implements Screen {
+public class GameScreen implements Screen {
     private BirbGame game;
     private FitViewport viewport;
     private Birb birb;
@@ -48,7 +48,7 @@ public class FirstScreen implements Screen {
 
     private boolean gameOver;
 
-    public FirstScreen(BirbGame game, FitViewport viewport, Birb birb, Obstacle obstacle) {
+    public GameScreen(BirbGame game, FitViewport viewport, Birb birb, Obstacle obstacle) {
         red = new Texture("red.jpg");
 
         this.game = game;
