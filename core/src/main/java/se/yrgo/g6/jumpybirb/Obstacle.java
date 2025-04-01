@@ -27,22 +27,6 @@ public class Obstacle {
         obstacleSprites = new Array<>();
     }
 
-//    public void createObstacle(float x, float y) {
-//        obstacleSprite = new Sprite(obstacle);
-//
-//        //Gives obstacle random height
-//        random = 150 * MathUtils.random(0.8f, 1.15f);
-//
-//        //Set the obstacle size and position at right-side of screen
-//        obstacleSprite.setSize(100, random);
-//        obstacleSprite.setPosition(x, 0);
-//
-//        obstacleHitbox = new Hitboxes(obstacleSprite);
-//
-//        obstacleHitboxes.add(obstacleHitbox);
-//        obstacleSprites.add(obstacleSprite);
-//    }
-
     public void createObstacle(float x, float y) {
         obstacleSprite = new Sprite(obstacle);
         obstacleSpriteUSD = new Sprite(obstacleUSD);

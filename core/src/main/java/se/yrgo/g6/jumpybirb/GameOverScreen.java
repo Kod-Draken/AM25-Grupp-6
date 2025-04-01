@@ -23,6 +23,7 @@ public class GameOverScreen implements Screen {
     private float worldHeight;
 
     private Texture background;
+    private Texture floor;
     private Texture gameOver;
 
     private SpriteBatch batch;
@@ -39,7 +40,8 @@ public class GameOverScreen implements Screen {
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
-        background = new Texture("background.png");
+        background = new Texture("background-WIDER2.png");
+        floor = new Texture("floor.png");
         gameOver = new Texture("gameover.png");
 
         batch = new SpriteBatch();
@@ -65,12 +67,18 @@ public class GameOverScreen implements Screen {
 
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
-        batch.draw(background, 0, 0, worldWidth, worldHeight);
-        birbSprite.draw(batch);
+
+        batch.draw(background, -0, 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -0 + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
 
         for (Sprite obstacle : obstacle.getObstacleSprites()) {
             obstacle.draw(batch);
         }
+
+        batch.draw(floor, -0, 0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -0 + (worldWidth), 0, worldWidth * 2, floor.getHeight());
+
+        birbSprite.draw(batch);
 
         // Depending on
         String highscore;
@@ -88,7 +96,7 @@ public class GameOverScreen implements Screen {
     }
 
     private boolean newGame() {
-        return Gdx.input.isKeyJustPressed(Input.Keys.SPACE);
+        return (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT));
     }
 
     @Override

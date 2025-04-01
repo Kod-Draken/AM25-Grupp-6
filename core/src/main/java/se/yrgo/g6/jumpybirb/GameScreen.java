@@ -107,6 +107,7 @@ public class GameScreen implements Screen {
         obstacleHitbox = new Hitboxes();
         birbHitbox = new Hitboxes();
     }
+
     private void initTextures() {
         background = new Texture("background-WIDER2.png");
         floor = new Texture("floor.png");
@@ -193,7 +194,7 @@ public class GameScreen implements Screen {
 
     private void input() {
         // SPACE-BAR to jump.
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             velocity = JUMP_STRENGTH;
             game.setScore(game.getScore() + 1);
             isJumping = true;
@@ -209,13 +210,7 @@ public class GameScreen implements Screen {
      * @return True if coordinate is reached or obstacle collision.
      */
     private boolean isGameOver() {
-        if (obstacleHitboxes == null) {
-            return false;
-        }
-        if (gameOver) {
-            return true;
-        }
-        return birbSprite.getY() < -30f;
+        return (birbSprite.getY() < -30f || gameOver);
     }
 
     private void logic() {
