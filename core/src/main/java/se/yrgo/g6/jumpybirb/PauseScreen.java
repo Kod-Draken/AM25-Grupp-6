@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class PauseScreen implements Screen {
     private BirbGame game;
     private FitViewport viewport;
-    private Birb birb;
 
     private SpriteBatch batch;
     BitmapFont font;
@@ -24,7 +23,6 @@ public class PauseScreen implements Screen {
     public PauseScreen(BirbGame game, FitViewport viewport, Birb birb) {
         this.game = game;
         this.viewport = viewport;
-        this.birb = birb;
 
         batch = new SpriteBatch();
         font = new BitmapFont();
@@ -34,11 +32,6 @@ public class PauseScreen implements Screen {
 
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -55,6 +48,11 @@ public class PauseScreen implements Screen {
         font.getData().setScale(3f);
         font.draw(batch, "Game Paused", worldWidth / 2, worldHeight / 2 + 30f,1 , Align.center, false);
         batch.end();
+    }
+
+    @Override
+    public void show() {
+
     }
 
     @Override

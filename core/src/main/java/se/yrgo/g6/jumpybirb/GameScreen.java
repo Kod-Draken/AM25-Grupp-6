@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -25,17 +27,24 @@ public class GameScreen implements Screen {
     private float worldHeight;
 
     private Texture background;
+    private Texture floor;
 
     private SpriteBatch batch;
     private Sprite birbSprite;
+    private Sprite floorSprite;
 
     private Hitboxes birbHitbox;
     private Array<Hitboxes> obstacleHitboxes;
     private Hitboxes obstacleHitbox;
 
+    private float backgroundOffset;
+    private final float BACKGROUND_SPEED = 1;
+    private float floorOffset;
+    private final float FLOOR_SPEED = 2;
+
     float velocity = 0f;
-    final private float gravity = -30f;
-    final private float jumpStrenght = 500f;
+    final private float GRAVITY = -30f;
+    final private float JUMP_STRENGTH = 500f;
 
     // Obstacles
     final private float obstacleSpeed = -5f;
@@ -44,13 +53,16 @@ public class GameScreen implements Screen {
 
     private BitmapFont font;
 
-    private Texture red;
+    //Animation
+    Texture birbFlapSheet;
+    Animation<TextureRegion> flapAnimation;
+    float jumpAnimationTimer;
+    private static final int COLS = 5;
+    private boolean isJumping;
 
     private boolean gameOver;
 
     public GameScreen(BirbGame game, FitViewport viewport, Birb birb, Obstacle obstacle) {
-        red = new Texture("red.jpg");
-
         this.game = game;
         this.viewport = viewport;
         this.birb = birb;
@@ -59,29 +71,70 @@ public class GameScreen implements Screen {
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
-        background = new Texture("background.png");
+        gameOver = false;
         obstacleSprites = obstacle.getObstacleSprites();
         obstacleHitboxes = obstacle.getObstacleHitboxes();
+        initTextures();
+        initSprites(birb);
+        initHitboxes();
+        initFonts();
+        initAnimation();
+    }
 
-        batch = new SpriteBatch();
-        birbSprite = birb.getBirbSprite();
-        birbSprite.setPosition(worldWidth / 2 -50, worldHeight / 2 -50);
+    private void initAnimation() {
+        TextureRegion[][] tmp = TextureRegion.split(
+            birbFlapSheet,birbFlapSheet.getWidth() / COLS,
+            birbFlapSheet.getHeight());
+        isJumping = false;
+        TextureRegion[] animationFrames = new TextureRegion[COLS];
+        int index = 0;
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < COLS; j++) {
+                animationFrames[index++] = tmp[i][j];
+            }
+        }
+        flapAnimation = new Animation<>(0.05f, animationFrames);
+        jumpAnimationTimer = 0f;
+    }
 
+    private void initFonts() {
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.getData().setScale(2f);
-
-        gameOver = false;
     }
 
-    @Override
-    public void show() {
-        // Prepare your screen here.
+    private void initHitboxes() {
+        obstacleHitbox = new Hitboxes();
+        birbHitbox = new Hitboxes();
     }
+    private void initTextures() {
+        background = new Texture("background-WIDER2.png");
+        floor = new Texture("floor.png");
+        birbFlapSheet = new Texture("birbAnimationSheet.png");
+    }
+
+    private void initSprites(Birb birb) {
+        batch = new SpriteBatch();
+
+        birbSprite = birb.getBirbSprite();
+        birbSprite.setPosition(
+            worldWidth / 2 - birbSprite.getWidth() / 2,
+            worldHeight / 2 - birbSprite.getWidth() / 2
+        );
+
+        floorSprite = new Sprite(floor);
+        floorSprite.setSize(floor.getWidth(), floor.getHeight() );
+        floorSprite.setPosition(0, 0);
+
+        obstacleSprites = obstacle.getObstacleSprites();
+    }
+
 
     @Override
     public void render(float delta) {
-        // Draw your screen here. "delta" is the time since last render in seconds.
+        // Time for animation
+        jumpAnimationTimer += delta;
+
         if (isGameOver()) {
             dispose();
             game.gameOver();
@@ -100,45 +153,60 @@ public class GameScreen implements Screen {
 
         batch.begin();
 
-        batch.draw(background, 0, 0, worldWidth, worldHeight);
-
-        birbSprite.draw(batch);
-
-        //Check hitboxes on obstacles
-        for (Hitboxes hitbox : obstacleHitboxes) {
-            batch.draw(red, hitbox.getX(), hitbox.getY(), hitbox.getWidth(), hitbox.getHeight());
-        }
-
-        //Draw obstacles
-        for (Sprite obstacle : obstacleSprites) {
-            obstacle.draw(batch);
-        }
-
-        //Draw score counter
-        font.draw(batch, "Score: " + game.getScore(), 10, 470);
-
-        //Draw Birb hitbox
-        batch.draw(red, birbSprite.getX(), birbSprite.getY(), birbSprite.getWidth(), birbSprite.getHeight());
+        drawBackground();
+        drawObstacle();
+        drawFloor();
+        drawScore();
+        drawBirb();
 
         batch.end();
     }
 
-    private void input() {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            velocity = jumpStrenght;
-            // For now score is increased when jumping.
-            game.setScore(game.getScore() + 1);
+    private void drawBirb() {
+        if (isJumping){
+        TextureRegion currentFrame = flapAnimation.getKeyFrame(jumpAnimationTimer, true);
+        batch.draw(currentFrame, birbSprite.getX(), birbSprite.getY());
         }
-        // When pressing ESC, pause game and hide birb
+        else birbSprite.draw(batch);
+    }
+
+    private void drawScore() {
+        font.draw(batch, "Score: " + game.getScore(), 250, 470, 300, Align.center, true);
+    }
+
+    private void drawFloor() {
+        batch.draw(floor, -floorOffset,0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -floorOffset + (worldWidth), 0, worldWidth * 2, floor.getHeight());
+    }
+
+    //Draw obstacles
+    private void drawObstacle() {
+        for (Sprite obstacle : obstacleSprites) {
+            obstacle.draw(batch);
+        }
+    }
+
+    private void drawBackground() {
+        batch.draw(background, -backgroundOffset, 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
+    }
+
+    private void input() {
+        // SPACE-BAR to jump.
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            velocity = JUMP_STRENGTH;
+            game.setScore(game.getScore() + 1);
+            isJumping = true;
+            jumpAnimationTimer = 0f;
+        }
+        // ESC to pause.
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            birbSprite.setSize(0, 0);
             game.pauseGame();
         }
     }
 
     /**
-     * Checks if the player hits the lowest allowed coordinate.
-     * @return true if coordinate is reached, otherwise false.
+     * @return True if coordinate is reached or obstacle collision.
      */
     private boolean isGameOver() {
         if (obstacleHitboxes == null) {
@@ -153,21 +221,44 @@ public class GameScreen implements Screen {
     private void logic() {
         delta = Gdx.graphics.getDeltaTime();
 
-        if (game.getScore() > game.getHighScore()) {
-            game.setHighScore(game.getScore());
-        }
+        velocity += GRAVITY;
 
-        velocity += gravity;
+        isNewHighscore();
+
+        scrollBackground();
+        scrollFloor();
+
         birbSprite.translateY(velocity * delta);
         birbHitbox = new Hitboxes(birbSprite);
 
-        //Obstacles in the array moves from right to left, removes obstacles outside screen
+        if (isJumping && flapAnimation.isAnimationFinished(jumpAnimationTimer)) {
+            isJumping = false;
+        }
+
+        moveObstacles();
+        spawnObstacle();
+
+        // Lock area in which the player can move.
+        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), 0,worldHeight - birbSprite.getHeight()));
+
+    }
+
+    private void spawnObstacle() {
+        obstacleTimer += delta;
+        if (obstacleTimer > 2f) {
+            obstacleTimer = 0f;
+            obstacle.createObstacle(worldWidth, worldHeight);
+        }
+    }
+
+    private void moveObstacles() {
         for (int i = obstacleSprites.size -1; i >= 0; i--) {
             Sprite obstacleSprite = obstacleSprites.get(i);
             Hitboxes hitbox = obstacleHitboxes.get(i);
             float obstacleWidth = obstacleSprite.getWidth();
             float obstacleHeight = obstacleSprite.getHeight();
 
+            // Move obstacle left
             hitbox.setHitbox(obstacleSprite);
             obstacleSprite.translateX(-200f * delta);
 
@@ -176,23 +267,32 @@ public class GameScreen implements Screen {
                 obstacleHitboxes.removeIndex(i);
             }
         }
-
-        //Creates obstacles based on delta time
-        obstacleTimer += delta;
-        if (obstacleTimer > 2f) {
-            obstacleTimer = 0f;
-            obstacle.createObstacle(worldWidth, worldHeight);
-        }
-
-        //Prevents Birb from exiting the screen on the Y-axis
-        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), -51,worldHeight - 100));
-
         for (Hitboxes hitbox : obstacleHitboxes) {
             if (birbHitbox.overlaps(hitbox)) {
                 gameOver = true;
             }
         }
+    }
 
+    private void scrollFloor() {
+        floorOffset += FLOOR_SPEED;
+        if (floorOffset % (worldWidth) == 0) {
+            floorOffset = 0;
+        }
+    }
+
+    private void scrollBackground() {
+        backgroundOffset += BACKGROUND_SPEED;
+        if (backgroundOffset % (worldWidth * 2) == 0) {
+            backgroundOffset = 0;
+        }
+    }
+
+
+    private void isNewHighscore() {
+        if (game.getScore() > game.getHighScore()) {
+            game.setHighScore(game.getScore());
+        }
     }
 
     @Override
@@ -209,8 +309,13 @@ public class GameScreen implements Screen {
     @Override
     public void resume() {
         // When resuming game, show birb and jump once
-        birbSprite.setSize(100, 100);
-        velocity = jumpStrenght;
+        birbSprite.setSize(93, 58);
+        velocity = JUMP_STRENGTH;
+    }
+
+    @Override
+    public void show() {
+        // Prepare your screen here.
     }
 
     @Override
@@ -223,3 +328,5 @@ public class GameScreen implements Screen {
         batch.dispose();
     }
 }
+
+
