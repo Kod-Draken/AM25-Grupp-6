@@ -125,6 +125,10 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         // Time for animation
         jumpAnimationTimer += delta;
+        System.out.println("gameScreen:");
+        System.out.println("  backgroundOffset: " + game.backgroundOffset);
+        System.out.println("  floorOffset: " + game.floorOffset);
+        System.out.println("  birb Y: " + birbSprite.getY());
 
         if (isGameOver()) {
             dispose();
@@ -165,8 +169,8 @@ public class GameScreen implements Screen {
     }
 
     private void drawFloor() {
-        batch.draw(floor, -floorOffset,0, worldWidth * 2, floor.getHeight());
-        batch.draw(floor, -floorOffset + (worldWidth), 0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -game.floorOffset,0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -game.floorOffset + (worldWidth), 0, worldWidth * 2, floor.getHeight());
     }
 
     private void drawObstacle() {
@@ -176,8 +180,8 @@ public class GameScreen implements Screen {
     }
 
     private void drawBackground() {
-        batch.draw(background, -backgroundOffset, 0, worldWidth * 2, worldHeight);
-        batch.draw(background, -backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -game.backgroundOffset, 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -game.backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
     }
 
     private void input() {
@@ -254,16 +258,16 @@ public class GameScreen implements Screen {
     }
 
     private void scrollFloor() {
-        floorOffset += FLOOR_SPEED;
-        if (floorOffset % (worldWidth) == 0) {
-            floorOffset = 0;
+        game.floorOffset += FLOOR_SPEED;
+        if (game.floorOffset % (worldWidth) == 0) {
+            game.floorOffset = 0;
         }
     }
 
     private void scrollBackground() {
-        backgroundOffset += BACKGROUND_SPEED;
-        if (backgroundOffset % (worldWidth * 2) == 0) {
-            backgroundOffset = 0;
+        game.backgroundOffset += BACKGROUND_SPEED;
+        if (game.backgroundOffset % (worldWidth * 2) == 0) {
+            game.backgroundOffset = 0;
         }
     }
 

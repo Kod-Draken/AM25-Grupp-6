@@ -19,11 +19,13 @@ public class GameOverScreen implements Screen {
     private Birb birb;
     private Obstacle obstacle;
 
+    private float delta;
     private float worldWidth;
     private float worldHeight;
 
     private Texture background;
     private Texture gameOver;
+    private Texture floor;
 
     private SpriteBatch batch;
     private Sprite birbSprite;
@@ -39,7 +41,8 @@ public class GameOverScreen implements Screen {
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
-        background = new Texture("background.png");
+        background = new Texture("background-WIDER2.png");
+        floor = new Texture("floor.png");
         gameOver = new Texture("gameover.png");
 
         batch = new SpriteBatch();
@@ -52,7 +55,13 @@ public class GameOverScreen implements Screen {
     }
 
     @Override
-    public void render(float v) {
+    public void render(float delta) {
+        viewport.apply();
+        System.out.println("GameOverScreen:");
+        System.out.println("  backgroundOffset: " + game.backgroundOffset);
+        System.out.println("  floorOffset: " + game.floorOffset);
+        System.out.println("  birb Y: " + birb.getBirbSprite().getY());
+
         if (newGame()) {
             game.newGame();
             return;
@@ -61,11 +70,16 @@ public class GameOverScreen implements Screen {
     }
 
     private void draw() {
-        viewport.apply();
 
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
-        batch.draw(background, 0, 0, worldWidth, worldHeight);
+
+        batch.draw(background, -game.backgroundOffset, 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -game.backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
+
+        batch.draw(floor, -game.floorOffset,0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -game.floorOffset + (worldWidth), 0, worldWidth * 2, floor.getHeight());
+
         birbSprite.draw(batch);
 
         for (Sprite obstacle : obstacle.getObstacleSprites()) {

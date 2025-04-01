@@ -33,6 +33,7 @@ public class BirbGame extends Game {
     }
 
     public void gameOver() {
+        System.out.println("GAME OVER");
         setScreen(new GameOverScreen(this, viewport, birb, obstacle));
     }
 
