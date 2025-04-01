@@ -123,12 +123,11 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        // debug
+        // Gdx.app.log("Delta", "Gamescreen: " +delta);
+
         // Time for animation
         jumpAnimationTimer += delta;
-        System.out.println("gameScreen:");
-        System.out.println("  backgroundOffset: " + game.backgroundOffset);
-        System.out.println("  floorOffset: " + game.floorOffset);
-        System.out.println("  birb Y: " + birbSprite.getY());
 
         if (isGameOver()) {
             dispose();
@@ -142,7 +141,7 @@ public class GameScreen implements Screen {
 
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
-        viewport.apply();
+
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
@@ -202,7 +201,7 @@ public class GameScreen implements Screen {
      * @return True if coordinate is reached or obstacle collision.
      */
     private boolean isGameOver() {
-        return birbHitbox.overlaps(obstacleHitbox) || birbSprite.getY() <= 40f;
+        return birbHitbox.overlaps(obstacleHitbox) || birbSprite.getY() <= floor.getHeight();
     }
 
     private void logic() {
@@ -226,7 +225,7 @@ public class GameScreen implements Screen {
         spawnObstacle();
 
         // Lock area in which the player can move.
-        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), 0,worldHeight - birbSprite.getHeight()));
+        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), floor.getHeight() -1,worldHeight - birbSprite.getHeight()));
 
     }
 
@@ -297,7 +296,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        // Prepare your screen here.
+        viewport.apply();
     }
 
     @Override

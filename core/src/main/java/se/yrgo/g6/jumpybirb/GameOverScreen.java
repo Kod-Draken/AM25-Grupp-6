@@ -56,11 +56,8 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        viewport.apply();
-        System.out.println("GameOverScreen:");
-        System.out.println("  backgroundOffset: " + game.backgroundOffset);
-        System.out.println("  floorOffset: " + game.floorOffset);
-        System.out.println("  birb Y: " + birb.getBirbSprite().getY());
+        // debug
+        // Gdx.app.log("Delta", "GameOverScreen: " +delta);
 
         if (newGame()) {
             game.newGame();
@@ -77,14 +74,15 @@ public class GameOverScreen implements Screen {
         batch.draw(background, -game.backgroundOffset, 0, worldWidth * 2, worldHeight);
         batch.draw(background, -game.backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
 
+        for (Sprite obstacle : obstacle.getObstacleSprites()) {
+            obstacle.draw(batch);
+        }
+
         batch.draw(floor, -game.floorOffset,0, worldWidth * 2, floor.getHeight());
         batch.draw(floor, -game.floorOffset + (worldWidth), 0, worldWidth * 2, floor.getHeight());
 
         birbSprite.draw(batch);
 
-        for (Sprite obstacle : obstacle.getObstacleSprites()) {
-            obstacle.draw(batch);
-        }
 
         // Depending on
         String highscore;
@@ -107,7 +105,7 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void show() {
-
+        viewport.apply();
     }
 
 
