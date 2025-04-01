@@ -185,7 +185,8 @@ public class GameScreen implements Screen {
 
     private void input() {
         // SPACE-BAR to jump.
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
+            || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             velocity = JUMP_STRENGTH;
             game.setScore(game.getScore() + 1);
             isJumping = true;

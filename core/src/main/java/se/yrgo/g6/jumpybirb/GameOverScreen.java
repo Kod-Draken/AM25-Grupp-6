@@ -100,7 +100,8 @@ public class GameOverScreen implements Screen {
     }
 
     private boolean newGame() {
-        return Gdx.input.isKeyJustPressed(Input.Keys.SPACE);
+        return Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
+            || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT);
     }
 
     @Override
