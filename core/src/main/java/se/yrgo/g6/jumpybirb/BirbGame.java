@@ -11,10 +11,12 @@ public class BirbGame extends Game {
 
     private Birb birb;
     private Obstacle obstacle;
-    private Enviroment enviroment;
 
     private int score;
     private int highScore;
+
+    float backgroundOffset;
+    float floorOffset;
 
     @Override
     public void create() {
@@ -25,7 +27,6 @@ public class BirbGame extends Game {
     public void newGame() {
         birb = new Birb();
         obstacle = new Obstacle();
-        enviroment = new Enviroment();
         currentScreen = new GameScreen(this, viewport, birb, obstacle);
         setScreen(currentScreen);
         this.score = 0;
@@ -57,5 +58,13 @@ public class BirbGame extends Game {
     }
     public void setHighScore(int highScore) {
         this.highScore = highScore;
+    }
+
+    public float getBackgroundOffset() {
+        return backgroundOffset;
+    }
+
+    public float getFloorOffset() {
+        return floorOffset;
     }
 }

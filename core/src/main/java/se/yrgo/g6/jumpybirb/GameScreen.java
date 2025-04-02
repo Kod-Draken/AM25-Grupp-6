@@ -33,9 +33,7 @@ public class GameScreen implements Screen {
     private Array<Hitboxes> obstacleHitboxes;
     private Hitboxes obstacleHitbox;
 
-    private float backgroundOffset;
     private final float BACKGROUND_SPEED = 1;
-    private float floorOffset;
     private final float FLOOR_SPEED = 2;
 
     float velocity = 0f;
