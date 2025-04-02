@@ -23,6 +23,11 @@ public class GameOverScreen implements Screen {
     private float worldWidth;
     private float worldHeight;
 
+    // logic to block input after game over
+    private boolean inputBlocked = true;
+    private float inputBlockTime = 0;
+    private static final float BLOCK_DURATION = 1f;
+
     private Texture background;
     private Texture gameOver;
     private Texture floor;
@@ -56,14 +61,19 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // debug
-        // Gdx.app.log("Delta", "GameOverScreen: " +delta);
+        if (inputBlocked) {
+            inputBlockTime += delta;
+            if (inputBlockTime >= BLOCK_DURATION) {
+                inputBlocked = false;  // Unblock input after the duration
+                inputBlockTime = 0;    // Reset the timer
+            }
+        }
+
+        draw();
 
         if (newGame()) {
             game.newGame();
-            return;
         }
-        draw();
     }
 
     private void draw() {
@@ -100,6 +110,7 @@ public class GameOverScreen implements Screen {
     }
 
     private boolean newGame() {
+        if (inputBlocked) return false;
         return Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
             || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT);
     }
