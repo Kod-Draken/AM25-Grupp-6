@@ -148,10 +148,14 @@ public class GameScreen implements Screen {
         batch.begin();
 
         drawBackground();
+        //debug for hitboxes
+        //drawRed(obstacleHitboxes, birbHitbox);
+
         drawObstacle();
         drawFloor();
         drawScore();
         drawBirb();
+
 
         batch.end();
     }
@@ -314,6 +318,15 @@ public class GameScreen implements Screen {
     public void dispose() {
         batch.dispose();
     }
+
+    private void drawRed(Array<Hitboxes> o, Hitboxes b) {
+        Texture red = new Texture("red.jpg");
+        for (Hitboxes h : o) {
+            batch.draw(red, h.getX(), h.getY(), h.getWidth(), h.getHeight());
+        }
+        batch.draw(red, b.getX(), b.getY(), b.getWidth(), b.getHeight());
+    }
+
 }
 
 

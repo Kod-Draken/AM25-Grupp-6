@@ -11,59 +11,47 @@ public class Obstacle {
 
     private Texture obstacle;
     private Texture obstacleUSD;
+    private Texture cloud;
+    private Texture tree;
 
     private Array<Sprite> obstacleSprites;
-    private Sprite obstacleSprite;
-    private Sprite obstacleSpriteUSD;
+    private Sprite groundedObstacleSprite;
+    private Sprite elevatedObstacleSprite;
 
-    private float random;
-    private float randomUSD;
+    private float randomScale;
+    private float randomPosition;
 
 
     public Obstacle() {
         obstacle = new Texture("obstacle.png");
         obstacleUSD = new Texture("obstacleUSD.png");
+        cloud = new Texture("cloud.png");
+        tree = new Texture("tree1.png");
         obstacleHitboxes = new Array<>();
         obstacleSprites = new Array<>();
     }
 
     public void createObstacle(float x, float y) {
-        obstacleSprite = new Sprite(obstacle);
-        obstacleSpriteUSD = new Sprite(obstacleUSD);
+        groundedObstacleSprite = new Sprite(tree);
+        elevatedObstacleSprite = new Sprite(cloud);
 
-        //Gives obstacle random height
-        random = 150 * MathUtils.random(0.8f, 1.15f);
-        randomUSD = 150 * MathUtils.random(0.8f, 1.15f);
+        //Gives obstacle random scale
+        randomScale = 1 * MathUtils.random(0.6f, 0.8f);
+        randomPosition = 1 * MathUtils.random(1f, 1.5f);
 
         //Set the obstacle size and position at right-side of screen
-        obstacleSprite.setSize(100, random);
-        obstacleSpriteUSD.setSize(100, randomUSD);
-        obstacleSprite.setPosition(x, 0);
-        obstacleSpriteUSD.setPosition(x, y-obstacleSpriteUSD.getHeight());
+        groundedObstacleSprite.setSize(171 * randomScale, 300 * randomScale);
+        elevatedObstacleSprite.setSize(elevatedObstacleSprite.getWidth(), elevatedObstacleSprite.getHeight());
+        groundedObstacleSprite.setPosition(x * randomPosition, 0);
+        elevatedObstacleSprite.setPosition(x * randomPosition, y - elevatedObstacleSprite.getHeight() * randomPosition);
 
-        obstacleHitbox = new Hitboxes(obstacleSprite);
+        obstacleHitbox = new Hitboxes(groundedObstacleSprite);
         obstacleHitboxes.add(obstacleHitbox);
-        obstacleHitbox = new Hitboxes(obstacleSpriteUSD);
+        obstacleHitbox = new Hitboxes(elevatedObstacleSprite);
         obstacleHitboxes.add(obstacleHitbox);
 
-        obstacleSprites.add(obstacleSprite);
-        obstacleSprites.add(obstacleSpriteUSD);
-    }
-
-    public float getHeight() {
-        return obstacleSprite.getHeight();
-    }
-
-    public float getWidth() {
-        return obstacleSprite.getWidth();
-    }
-
-    public float getX() {
-        return obstacleSprite.getX();
-    }
-
-    public float getY() {
-        return obstacleSprite.getY();
+        obstacleSprites.add(groundedObstacleSprite);
+        obstacleSprites.add(elevatedObstacleSprite);
     }
 
     public Array<Hitboxes> getObstacleHitboxes() {
