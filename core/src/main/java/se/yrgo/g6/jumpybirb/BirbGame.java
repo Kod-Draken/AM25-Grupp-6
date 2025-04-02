@@ -15,8 +15,8 @@ public class BirbGame extends Game {
     private int score;
     private int highScore;
 
-    int backgroundOffset = 0;
-    int floorOffset = 0;
+    float backgroundOffset;
+    float floorOffset;
 
     @Override
     public void create() {
@@ -58,5 +58,13 @@ public class BirbGame extends Game {
     }
     public void setHighScore(int highScore) {
         this.highScore = highScore;
+    }
+
+    public float getBackgroundOffset() {
+        return backgroundOffset;
+    }
+
+    public float getFloorOffset() {
+        return floorOffset;
     }
 }

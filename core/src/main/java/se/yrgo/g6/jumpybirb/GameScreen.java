@@ -31,11 +31,10 @@ public class GameScreen implements Screen {
     private Sprite floorSprite;
 
     private Hitboxes birbHitbox;
+    private Array<Hitboxes> obstacleHitboxes;
     private Hitboxes obstacleHitbox;
 
-    private float backgroundOffset;
     private final float BACKGROUND_SPEED = 1;
-    private float floorOffset;
     private final float FLOOR_SPEED = 2;
 
     float velocity = 0f;
@@ -58,6 +57,8 @@ public class GameScreen implements Screen {
     private static final int COLS = 5;
     private boolean isJumping;
 
+    private boolean gameOver;
+
     public GameScreen(BirbGame game, FitViewport viewport, Birb birb, Obstacle obstacle) {
         this.game = game;
         this.viewport = viewport;
@@ -66,6 +67,9 @@ public class GameScreen implements Screen {
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
+        gameOver = false;
+        obstacleSprites = obstacle.getObstacleSprites();
+        obstacleHitboxes = obstacle.getObstacleHitboxes();
         initTextures();
         initSprites(birb);
         initHitboxes();
@@ -128,9 +132,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // debug
-        // Gdx.app.log("Delta", "Gamescreen: " +delta);
-
         // Time for animation
         jumpAnimationTimer += delta;
 
@@ -139,9 +140,9 @@ public class GameScreen implements Screen {
             game.gameOver();
             return;
         }
-        input();
-        draw();
         logic();
+        draw();
+        input();
     }
 
     private void draw() {
@@ -152,10 +153,14 @@ public class GameScreen implements Screen {
         batch.begin();
 
         drawBackground();
+        //debug for hitboxes
+        //drawRed(obstacleHitboxes, birbHitbox);
+
         drawObstacle();
         drawFloor();
         drawScore();
         drawBirb();
+
 
         batch.end();
     }
@@ -208,7 +213,7 @@ public class GameScreen implements Screen {
      * @return True if coordinate is reached or obstacle collision.
      */
     private boolean isGameOver() {
-        return birbHitbox.overlaps(obstacleHitbox) || birbSprite.getY() <= floor.getHeight();
+        return (birbSprite.getY() <= floor.getHeight() || gameOver);
     }
 
     private void logic() {
@@ -238,27 +243,31 @@ public class GameScreen implements Screen {
 
     private void spawnObstacle() {
         obstacleTimer += delta;
-        if (obstacleTimer > 4f) {
+        if (obstacleTimer > 2f) {
             obstacleTimer = 0f;
-            obstacle.createObstacle(worldWidth, 0);
+            obstacle.createObstacle(worldWidth, worldHeight);
         }
     }
 
     private void moveObstacles() {
         for (int i = obstacleSprites.size -1; i >= 0; i--) {
             Sprite obstacleSprite = obstacleSprites.get(i);
+            Hitboxes hitbox = obstacleHitboxes.get(i);
             float obstacleWidth = obstacleSprite.getWidth();
             float obstacleHeight = obstacleSprite.getHeight();
 
             // Move obstacle left
-            obstacleSprite.translateX(-200 * delta);
+            hitbox.setHitbox(obstacleSprite);
+            obstacleSprite.translateX(-200f * delta);
 
-            // Update obstacle hitbox
-            obstacleHitbox.setHitbox(obstacleSprite);
-
-            // Remove obstacle if no longer visible
             if (obstacleSprite.getX() < -obstacleWidth) {
                 obstacleSprites.removeIndex(i);
+                obstacleHitboxes.removeIndex(i);
+            }
+        }
+        for (Hitboxes hitbox : obstacleHitboxes) {
+            if (birbHitbox.overlaps(hitbox)) {
+                gameOver = true;
             }
         }
     }
@@ -315,6 +324,15 @@ public class GameScreen implements Screen {
     public void dispose() {
         batch.dispose();
     }
+
+    private void drawRed(Array<Hitboxes> o, Hitboxes b) {
+        Texture red = new Texture("red.jpg");
+        for (Hitboxes h : o) {
+            batch.draw(red, h.getX(), h.getY(), h.getWidth(), h.getHeight());
+        }
+        batch.draw(red, b.getX(), b.getY(), b.getWidth(), b.getHeight());
+    }
+
 }
 
 
