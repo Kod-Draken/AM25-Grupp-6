@@ -154,7 +154,7 @@ public class GameScreen implements Screen {
 
         drawBackground();
         //debug for hitboxes
-        //drawRed(obstacleHitboxes, birbHitbox);
+        drawRed(obstacleHitboxes, birbHitbox);
 
         drawObstacle();
         drawFloor();

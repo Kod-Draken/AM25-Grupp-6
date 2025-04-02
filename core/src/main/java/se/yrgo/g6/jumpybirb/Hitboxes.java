@@ -1,6 +1,7 @@
 package se.yrgo.g6.jumpybirb;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Hitboxes {
@@ -13,12 +14,12 @@ public class Hitboxes {
 
     public Hitboxes(Sprite sprite) {
         this.sprite = sprite;
-        hitbox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+        hitbox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight() * 0.95f);
     }
 
     public void setHitbox(Sprite sprite) {
         this.sprite = sprite;
-        hitbox.set(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+        hitbox.set(sprite.getX() + 10f, sprite.getY() + 10f, sprite.getWidth() -20f, sprite.getHeight() * 0.9f);
     }
 
     public Sprite getSprite() {

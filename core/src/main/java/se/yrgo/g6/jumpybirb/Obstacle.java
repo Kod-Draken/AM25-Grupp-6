@@ -36,14 +36,21 @@ public class Obstacle {
         elevatedObstacleSprite = new Sprite(cloud);
 
         //Gives obstacle random scale
-        randomScale = 1 * MathUtils.random(0.6f, 0.8f);
-        randomPosition = 1 * MathUtils.random(1f, 1.5f);
+        randomScale = 1 * MathUtils.random(0.65f, 0.8f);
+        randomPosition = 1 * MathUtils.random(1f, 1.40f);
 
         //Set the obstacle size and position at right-side of screen
         groundedObstacleSprite.setSize(171 * randomScale, 300 * randomScale);
         elevatedObstacleSprite.setSize(elevatedObstacleSprite.getWidth(), elevatedObstacleSprite.getHeight());
         groundedObstacleSprite.setPosition(x * randomPosition, 0);
-        elevatedObstacleSprite.setPosition(x * randomPosition, y - elevatedObstacleSprite.getHeight() * randomPosition);
+        //High cloud
+        if (MathUtils.randomBoolean()) {
+            elevatedObstacleSprite.setPosition(x * randomPosition, y - elevatedObstacleSprite.getHeight());
+        }
+        //Low cloud
+        else {
+            elevatedObstacleSprite.setPosition(x * randomPosition, y - elevatedObstacleSprite.getHeight() * 2);
+        }
 
         obstacleHitbox = new Hitboxes(groundedObstacleSprite);
         obstacleHitboxes.add(obstacleHitbox);
