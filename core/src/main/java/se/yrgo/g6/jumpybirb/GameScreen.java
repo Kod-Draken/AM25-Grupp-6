@@ -5,9 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Align;
@@ -19,7 +16,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class GameScreen implements Screen {
     private BirbGame game;
     private FitViewport viewport;
-    private Birb birb;
     private Obstacle obstacle;
 
     private float delta;
@@ -65,7 +61,6 @@ public class GameScreen implements Screen {
     public GameScreen(BirbGame game, FitViewport viewport, Birb birb, Obstacle obstacle) {
         this.game = game;
         this.viewport = viewport;
-        this.birb = birb;
         this.obstacle = obstacle;
 
         worldWidth = viewport.getWorldWidth();
@@ -86,6 +81,7 @@ public class GameScreen implements Screen {
             birbFlapSheet,birbFlapSheet.getWidth() / COLS,
             birbFlapSheet.getHeight());
         isJumping = false;
+
         TextureRegion[] animationFrames = new TextureRegion[COLS];
         int index = 0;
         for (int i = 0; i < 1; i++) {
@@ -148,7 +144,6 @@ public class GameScreen implements Screen {
 
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
-        viewport.apply();
 
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
@@ -176,11 +171,10 @@ public class GameScreen implements Screen {
     }
 
     private void drawFloor() {
-        batch.draw(floor, -floorOffset,0, worldWidth * 2, floor.getHeight());
-        batch.draw(floor, -floorOffset + (worldWidth), 0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -game.floorOffset,0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -game.floorOffset + (worldWidth), 0, worldWidth * 2, floor.getHeight());
     }
 
-    //Draw obstacles
     private void drawObstacle() {
         for (Sprite obstacle : obstacleSprites) {
             obstacle.draw(batch);
@@ -188,13 +182,14 @@ public class GameScreen implements Screen {
     }
 
     private void drawBackground() {
-        batch.draw(background, -backgroundOffset, 0, worldWidth * 2, worldHeight);
-        batch.draw(background, -backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -game.backgroundOffset, 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -game.backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
     }
 
     private void input() {
         // SPACE-BAR to jump.
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
+            || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             velocity = JUMP_STRENGTH;
             game.setScore(game.getScore() + 1);
             isJumping = true;
@@ -210,7 +205,7 @@ public class GameScreen implements Screen {
      * @return True if coordinate is reached or obstacle collision.
      */
     private boolean isGameOver() {
-        return (birbSprite.getY() < -30f || gameOver);
+        return (birbSprite.getY() <= floor.getHeight() || gameOver);
     }
 
     private void logic() {
@@ -234,7 +229,7 @@ public class GameScreen implements Screen {
         spawnObstacle();
 
         // Lock area in which the player can move.
-        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), 0,worldHeight - birbSprite.getHeight()));
+        birbSprite.setY(MathUtils.clamp(birbSprite.getY(), floor.getHeight() -1,worldHeight - birbSprite.getHeight()));
 
     }
 
@@ -270,19 +265,18 @@ public class GameScreen implements Screen {
     }
 
     private void scrollFloor() {
-        floorOffset += FLOOR_SPEED;
-        if (floorOffset % (worldWidth) == 0) {
-            floorOffset = 0;
+        game.floorOffset += FLOOR_SPEED;
+        if (game.floorOffset % (worldWidth) == 0) {
+            game.floorOffset = 0;
         }
     }
 
     private void scrollBackground() {
-        backgroundOffset += BACKGROUND_SPEED;
-        if (backgroundOffset % (worldWidth * 2) == 0) {
-            backgroundOffset = 0;
+        game.backgroundOffset += BACKGROUND_SPEED;
+        if (game.backgroundOffset % (worldWidth * 2) == 0) {
+            game.backgroundOffset = 0;
         }
     }
-
 
     private void isNewHighscore() {
         if (game.getScore() > game.getHighScore()) {
@@ -310,7 +304,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        // Prepare your screen here.
+        viewport.apply();
     }
 
     @Override

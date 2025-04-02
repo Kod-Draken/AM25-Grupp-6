@@ -19,12 +19,13 @@ public class GameOverScreen implements Screen {
     private Birb birb;
     private Obstacle obstacle;
 
+    private float delta;
     private float worldWidth;
     private float worldHeight;
 
     private Texture background;
-    private Texture floor;
     private Texture gameOver;
+    private Texture floor;
 
     private SpriteBatch batch;
     private Sprite birbSprite;
@@ -54,7 +55,10 @@ public class GameOverScreen implements Screen {
     }
 
     @Override
-    public void render(float v) {
+    public void render(float delta) {
+        // debug
+        // Gdx.app.log("Delta", "GameOverScreen: " +delta);
+
         if (newGame()) {
             game.newGame();
             return;
@@ -63,22 +67,22 @@ public class GameOverScreen implements Screen {
     }
 
     private void draw() {
-        viewport.apply();
 
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
 
-        batch.draw(background, -0, 0, worldWidth * 2, worldHeight);
-        batch.draw(background, -0 + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -game.backgroundOffset, 0, worldWidth * 2, worldHeight);
+        batch.draw(background, -game.backgroundOffset + (worldWidth * 2), 0, worldWidth * 2, worldHeight);
 
         for (Sprite obstacle : obstacle.getObstacleSprites()) {
             obstacle.draw(batch);
         }
 
-        batch.draw(floor, -0, 0, worldWidth * 2, floor.getHeight());
-        batch.draw(floor, -0 + (worldWidth), 0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -game.floorOffset,0, worldWidth * 2, floor.getHeight());
+        batch.draw(floor, -game.floorOffset + (worldWidth), 0, worldWidth * 2, floor.getHeight());
 
         birbSprite.draw(batch);
+
 
         // Depending on
         String highscore;
@@ -96,12 +100,13 @@ public class GameOverScreen implements Screen {
     }
 
     private boolean newGame() {
-        return (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT));
+        return Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
+            || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT);
     }
 
     @Override
     public void show() {
-
+        viewport.apply();
     }
 
 

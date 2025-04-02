@@ -32,7 +32,9 @@ public class BirbGame extends Game {
     }
 
     public void gameOver() {
-        setScreen(new GameOverScreen(this, viewport, birb, obstacle));
+        GameOverScreen gameOverScreen = new GameOverScreen(this, viewport, birb, obstacle);
+        setScreen(gameOverScreen);
+        gameOverScreen.render(0);
     }
 
     public void pauseGame() {
