@@ -3,6 +3,7 @@ package se.yrgo.g6.jumpybirb;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -48,6 +49,8 @@ public class GameScreen implements Screen {
 
     private BitmapFont font;
 
+    private Sound jumpSound;
+
     //Animation
     Texture birbFlapSheet;
     Animation<TextureRegion> flapAnimation;
@@ -68,6 +71,8 @@ public class GameScreen implements Screen {
         initHitboxes();
         initFonts();
         initAnimation();
+
+        jumpSound = Gdx.audio.newSound(Gdx.files.internal("JumpSound.mp3"));
     }
 
     private void initAnimation() {
@@ -187,6 +192,7 @@ public class GameScreen implements Screen {
         // SPACE-BAR to jump.
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
             || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            jumpSound.play();
             velocity = JUMP_STRENGTH;
             game.setScore(game.getScore() + 1);
             isJumping = true;
