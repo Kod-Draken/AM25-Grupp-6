@@ -36,6 +36,11 @@ public class BirbGame extends Game {
         currentScreen = new GameScreen(this, viewport, birb, obstacle);
         setScreen(currentScreen);
         this.score = 0;
+
+        initAndPlayMusic();
+    }
+
+    private void initAndPlayMusic() {
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("BirbGameTheme.mp3"));
         backgroundMusic.setVolume(.4f);
         backgroundMusic.setLooping(true);
@@ -47,11 +52,17 @@ public class BirbGame extends Game {
     }
 
     public void gameOver() {
-        backgroundMusic.stop();
-        backgroundMusic.dispose();
+
+        stopAndResetMusic();
+
         GameOverScreen gameOverScreen = new GameOverScreen(this, viewport, birb, obstacle);
         setScreen(gameOverScreen);
         gameOverScreen.render(0);
+    }
+
+    private void stopAndResetMusic() {
+        backgroundMusic.stop();
+        backgroundMusic.dispose();
     }
 
     public void pauseGame() {
