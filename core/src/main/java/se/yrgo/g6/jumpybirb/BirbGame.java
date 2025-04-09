@@ -1,7 +1,10 @@
 package se.yrgo.g6.jumpybirb;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -12,16 +15,19 @@ public class BirbGame extends Game {
     private Birb birb;
     private Obstacle obstacle;
 
+    private ScoreKeeper scoreKeeper; // keeps track of high score
     private int score;
-    private int highScore;
 
     float backgroundOffset;
     float floorOffset;
 
+    private Music backgroundMusic;
+
     @Override
     public void create() {
         newGame();
-        this.highScore = 0;
+        initScoreKeeper();
+
     }
 
     public void newGame() {
@@ -30,9 +36,19 @@ public class BirbGame extends Game {
         currentScreen = new GameScreen(this, viewport, birb, obstacle);
         setScreen(currentScreen);
         this.score = 0;
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("BirbGameTheme.mp3"));
+        backgroundMusic.setVolume(.4f);
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
+    }
+
+    public void initScoreKeeper() {
+        scoreKeeper = new ScoreKeeper();
     }
 
     public void gameOver() {
+        backgroundMusic.stop();
+        backgroundMusic.dispose();
         GameOverScreen gameOverScreen = new GameOverScreen(this, viewport, birb, obstacle);
         setScreen(gameOverScreen);
         gameOverScreen.render(0);
@@ -54,10 +70,10 @@ public class BirbGame extends Game {
         this.score = score;
     }
     public int getHighScore() {
-        return highScore;
+        return scoreKeeper.getHighscore();
     }
     public void setHighScore(int highScore) {
-        this.highScore = highScore;
+        scoreKeeper.setHighscore(highScore);
     }
 
     public float getBackgroundOffset() {
