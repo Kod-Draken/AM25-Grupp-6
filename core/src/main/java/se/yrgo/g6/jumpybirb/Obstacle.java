@@ -9,8 +9,6 @@ public class Obstacle {
     private Array<Hitboxes> obstacleHitboxes;
     private Hitboxes obstacleHitbox;
 
-    private Texture obstacle;
-    private Texture obstacleUSD;
     private Texture cloud;
     private Texture tree;
 
@@ -23,8 +21,7 @@ public class Obstacle {
 
 
     public Obstacle() {
-        obstacle = new Texture("obstacle.png");
-        obstacleUSD = new Texture("obstacleUSD.png");
+
         cloud = new Texture("cloud.png");
         tree = new Texture("tree1.png");
         obstacleHitboxes = new Array<>();
@@ -53,8 +50,10 @@ public class Obstacle {
         }
 
         obstacleHitbox = new Hitboxes(groundedObstacleSprite);
+        obstacleHitbox.createTree();
         obstacleHitboxes.add(obstacleHitbox);
         obstacleHitbox = new Hitboxes(elevatedObstacleSprite);
+        obstacleHitbox.createCloud();
         obstacleHitboxes.add(obstacleHitbox);
 
         obstacleSprites.add(groundedObstacleSprite);

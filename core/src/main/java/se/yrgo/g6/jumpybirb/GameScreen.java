@@ -154,7 +154,7 @@ public class GameScreen implements Screen {
 
         drawBackground();
         //debug for hitboxes
-        drawRed(obstacleHitboxes, birbHitbox);
+        //drawRed(obstacleHitboxes, birbHitbox);
 
         drawObstacle();
         drawFloor();
@@ -228,6 +228,7 @@ public class GameScreen implements Screen {
 
         birbSprite.translateY(velocity * delta);
         birbHitbox = new Hitboxes(birbSprite);
+        birbHitbox.createBirb();
 
         if (isJumping && flapAnimation.isAnimationFinished(jumpAnimationTimer)) {
             isJumping = false;
@@ -247,6 +248,7 @@ public class GameScreen implements Screen {
             obstacleTimer = 0f;
             obstacle.createObstacle(worldWidth, worldHeight);
         }
+
     }
 
     private void moveObstacles() {
@@ -257,7 +259,7 @@ public class GameScreen implements Screen {
             float obstacleHeight = obstacleSprite.getHeight();
 
             // Move obstacle left
-            hitbox.setHitbox(obstacleSprite);
+            hitbox.setPosition(obstacleSprite.getX(), obstacleSprite.getY());
             obstacleSprite.translateX(-200f * delta);
 
             if (obstacleSprite.getX() < -obstacleWidth) {
@@ -325,12 +327,17 @@ public class GameScreen implements Screen {
         batch.dispose();
     }
 
+    /**
+     * Draws red background behind sprite to visualize approximate hitboxes
+     * @param o The array of obstacle hitboxes
+     * @param b The birb hitbox
+     */
     private void drawRed(Array<Hitboxes> o, Hitboxes b) {
         Texture red = new Texture("red.jpg");
         for (Hitboxes h : o) {
-            batch.draw(red, h.getX(), h.getY(), h.getWidth(), h.getHeight());
+            batch.draw(red, h.getRect().getX(), h.getRect().getY(), h.getRect().getWidth(), h.getRect().getHeight());
         }
-        batch.draw(red, b.getX(), b.getY(), b.getWidth(), b.getHeight());
+        batch.draw(red, b.getRect().getX(), b.getRect().getY(), b.getRect().getWidth(), b.getRect().getHeight());
     }
 
 }
