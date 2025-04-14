@@ -25,9 +25,14 @@ public class BirbGame extends Game {
 
     @Override
     public void create() {
-        newGame();
+        mainMenu();
         initScoreKeeper();
 
+    }
+
+    public void mainMenu() {
+        currentScreen = new MenuScreen(this, viewport);
+        setScreen(currentScreen);
     }
 
     public void newGame() {
@@ -47,6 +52,11 @@ public class BirbGame extends Game {
         backgroundMusic.play();
     }
 
+    private void stopAndResetMusic() {
+        backgroundMusic.stop();
+        backgroundMusic.dispose();
+    }
+
     public void initScoreKeeper() {
         scoreKeeper = new ScoreKeeper();
     }
@@ -60,10 +70,6 @@ public class BirbGame extends Game {
         gameOverScreen.render(0);
     }
 
-    private void stopAndResetMusic() {
-        backgroundMusic.stop();
-        backgroundMusic.dispose();
-    }
 
     public void pauseGame() {
         setScreen(new PauseScreen(this, viewport, birb));
