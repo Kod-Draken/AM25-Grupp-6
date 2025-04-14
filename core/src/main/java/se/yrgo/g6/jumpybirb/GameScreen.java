@@ -43,9 +43,10 @@ public class GameScreen implements Screen {
     final private float JUMP_STRENGTH = 550f;
 
     // Obstacles
-    final private float obstacleSpeed = -5f;
-    Array<Sprite> obstacleSprites;
+    private float obstacleSpeed = 200f;
+    private Array<Sprite> obstacleSprites;
     private float obstacleTimer;
+    private float obstacleTimerScale;
 
     private BitmapFont font;
 
@@ -130,6 +131,7 @@ public class GameScreen implements Screen {
         floorSprite.setPosition(0, 0);
 
         obstacleSprites = obstacle.getObstacleSprites();
+        obstacleTimerScale = 0f;
     }
 
 
@@ -224,7 +226,6 @@ public class GameScreen implements Screen {
         delta = Gdx.graphics.getDeltaTime();
 
         velocity += GRAVITY * delta;
-        System.out.println("Velocity: " + velocity + ", Y: " + birbSprite.getY());
         isNewHighscore();
 
         scrollBackground();
@@ -248,9 +249,14 @@ public class GameScreen implements Screen {
 
     private void spawnObstacle() {
         obstacleTimer += delta;
+        //Interval scaling ~105 seconds to cap
+        if (obstacleTimerScale < 0.75f) {
+            obstacleTimerScale += 0.00006f;
+        }
         if (obstacleTimer > 2f) {
-            obstacleTimer = 0f;
-            obstacle.createObstacle(worldWidth, worldHeight);
+            obstacleTimer = obstacleTimerScale;
+            obstacle.createCloud(worldWidth, worldHeight);
+            obstacle.createTree(worldWidth);
         }
 
     }
@@ -262,9 +268,14 @@ public class GameScreen implements Screen {
             float obstacleWidth = obstacleSprite.getWidth();
             float obstacleHeight = obstacleSprite.getHeight();
 
-            // Move obstacle left
+
+            // Move obstacle left, speed scaling caps out after ~75 seconds
             hitbox.setPosition(obstacleSprite.getX(), obstacleSprite.getY());
-            obstacleSprite.translateX(-200f * delta);
+            obstacleSprite.translateX(-obstacleSpeed * delta);
+            if (obstacleSpeed < 350f) {
+                obstacleSpeed += 0.0033f;
+                System.out.println("Speed: "+obstacleSpeed);
+            }
 
             if (obstacleSprite.getX() < -obstacleWidth) {
                 obstacleSprites.removeIndex(i);
