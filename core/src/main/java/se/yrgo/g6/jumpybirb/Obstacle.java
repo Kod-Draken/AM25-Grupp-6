@@ -9,8 +9,6 @@ public class Obstacle {
     private Array<Hitboxes> obstacleHitboxes;
     private Hitboxes obstacleHitbox;
 
-    private Texture obstacle;
-    private Texture obstacleUSD;
     private Texture cloud;
     private Texture tree;
 
@@ -23,8 +21,7 @@ public class Obstacle {
 
 
     public Obstacle() {
-        obstacle = new Texture("obstacle.png");
-        obstacleUSD = new Texture("obstacleUSD.png");
+
         cloud = new Texture("cloud.png");
         tree = new Texture("tree1.png");
         obstacleHitboxes = new Array<>();
@@ -36,18 +33,27 @@ public class Obstacle {
         elevatedObstacleSprite = new Sprite(cloud);
 
         //Gives obstacle random scale
-        randomScale = 1 * MathUtils.random(0.6f, 0.8f);
-        randomPosition = 1 * MathUtils.random(1f, 1.5f);
+        randomScale = 1 * MathUtils.random(0.65f, 0.8f);
+        randomPosition = 1 * MathUtils.random(1f, 1.40f);
 
         //Set the obstacle size and position at right-side of screen
         groundedObstacleSprite.setSize(171 * randomScale, 300 * randomScale);
         elevatedObstacleSprite.setSize(elevatedObstacleSprite.getWidth(), elevatedObstacleSprite.getHeight());
         groundedObstacleSprite.setPosition(x * randomPosition, 0);
-        elevatedObstacleSprite.setPosition(x * randomPosition, y - elevatedObstacleSprite.getHeight() * randomPosition);
+        //High cloud
+        if (MathUtils.randomBoolean()) {
+            elevatedObstacleSprite.setPosition(x * randomPosition, y - elevatedObstacleSprite.getHeight());
+        }
+        //Low cloud
+        else {
+            elevatedObstacleSprite.setPosition(x * randomPosition, y - elevatedObstacleSprite.getHeight() * 2);
+        }
 
         obstacleHitbox = new Hitboxes(groundedObstacleSprite);
+        obstacleHitbox.createTree();
         obstacleHitboxes.add(obstacleHitbox);
         obstacleHitbox = new Hitboxes(elevatedObstacleSprite);
+        obstacleHitbox.createCloud();
         obstacleHitboxes.add(obstacleHitbox);
 
         obstacleSprites.add(groundedObstacleSprite);
