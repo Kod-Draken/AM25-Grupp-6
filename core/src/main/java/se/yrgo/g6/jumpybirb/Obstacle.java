@@ -34,11 +34,11 @@ public class Obstacle {
 
         //Gives obstacle random scale
         randomScale = 1 * MathUtils.random(0.65f, 0.8f);
-        randomPosition = 1 * MathUtils.random(1f, 1.40f);
+        randomPosition = 1 * MathUtils.random(1f, 1.2f);
 
         //Set the obstacle size and position at right-side of screen
-        groundedObstacleSprite.setSize(171 * randomScale, 300 * randomScale);
-        elevatedObstacleSprite.setSize(elevatedObstacleSprite.getWidth(), elevatedObstacleSprite.getHeight());
+        groundedObstacleSprite.setSize(groundedObstacleSprite.getWidth() * randomScale, groundedObstacleSprite.getHeight() * randomScale);
+        elevatedObstacleSprite.setSize(elevatedObstacleSprite.getWidth() * randomScale, elevatedObstacleSprite.getHeight() * randomScale);
         groundedObstacleSprite.setPosition(x * randomPosition, 0);
         //High cloud
         if (MathUtils.randomBoolean()) {

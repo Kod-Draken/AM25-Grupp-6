@@ -319,6 +319,7 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         viewport.apply();
+        velocity = JUMP_STRENGTH;
     }
 
     @Override
