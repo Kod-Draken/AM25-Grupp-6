@@ -42,6 +42,12 @@ public class GameScreen implements Screen {
     final private float GRAVITY = -30f;
     final private float JUMP_STRENGTH = 500f;
 
+    // temp modifiers
+    final private float LVL_EASY = 1f;
+    final private float LVL_MEDIUM = 2f;
+    final private float LVL_HARD = 3f;
+
+
     // Obstacles
     final private float obstacleSpeed = -5f;
     Array<Sprite> obstacleSprites;
