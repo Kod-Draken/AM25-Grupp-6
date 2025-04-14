@@ -250,8 +250,8 @@ public class GameScreen implements Screen {
     private void spawnObstacle() {
         obstacleTimer += delta;
         //Interval scaling ~105 seconds to cap
-        if (obstacleTimerScale < 0.75f) {
-            obstacleTimerScale += 0.00006f;
+        if (obstacleTimerScale < 1.2f) {
+            obstacleTimerScale += 0.00011f;
         }
         if (obstacleTimer > 2f) {
             obstacleTimer = obstacleTimerScale;
@@ -272,9 +272,8 @@ public class GameScreen implements Screen {
             // Move obstacle left, speed scaling caps out after ~75 seconds
             hitbox.setPosition(obstacleSprite.getX(), obstacleSprite.getY());
             obstacleSprite.translateX(-obstacleSpeed * delta);
-            if (obstacleSpeed < 350f) {
-                obstacleSpeed += 0.0033f;
-                System.out.println("Speed: "+obstacleSpeed);
+            if (obstacleSpeed < 500f) {
+                obstacleSpeed += 0.005f;
             }
 
             if (obstacleSprite.getX() < -obstacleWidth) {

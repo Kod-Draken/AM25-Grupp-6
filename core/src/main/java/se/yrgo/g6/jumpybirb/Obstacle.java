@@ -31,7 +31,7 @@ public class Obstacle {
     public void createTree(float x) {
         groundedObstacleSprite = new Sprite(tree);
         //Gives obstacle random scale
-        randomScale = 1 * MathUtils.random(0.65f, 0.8f);
+        randomScale = 1 * MathUtils.random(0.7f, 0.75f);
         randomPosition = 1 * MathUtils.random(1f, 1.2f);
         groundedObstacleSprite.setSize(groundedObstacleSprite.getWidth() * randomScale, groundedObstacleSprite.getHeight() * randomScale);
         groundedObstacleSprite.setPosition(x * randomPosition, 0);
