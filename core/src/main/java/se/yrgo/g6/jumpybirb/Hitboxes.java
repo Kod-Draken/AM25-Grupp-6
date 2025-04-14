@@ -49,7 +49,8 @@ public class Hitboxes {
             sprite.getWidth()*0.4f, sprite.getHeight()*0.66f, //crown start
             sprite.getWidth()*0.1f, sprite.getHeight()*0.66f, //crown bottom left
             sprite.getWidth()*0.1f, sprite.getHeight()*0.75f, //crown mid left
-            sprite.getWidth()*0.55f, sprite.getHeight()*0.9f, //crown top
+            sprite.getWidth()*0.4f, sprite.getHeight()*0.95f, //crown top left
+            sprite.getWidth()*0.7f, sprite.getHeight()*0.95f, //crown top right
             sprite.getWidth()*0.9f, sprite.getHeight()*0.75f, //crown mid right
             sprite.getWidth()*0.9f, sprite.getHeight()*0.66f, //crown bottom right
             sprite.getWidth()*0.7f, sprite.getHeight()*0.66f, //crown end
