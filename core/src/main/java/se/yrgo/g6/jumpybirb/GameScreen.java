@@ -39,8 +39,8 @@ public class GameScreen implements Screen {
     private final float FLOOR_SPEED = 2;
 
     float velocity = 0f;
-    final private float GRAVITY = -30f;
-    final private float JUMP_STRENGTH = 500f;
+    final private float GRAVITY = -1700f;
+    final private float JUMP_STRENGTH = 550f;
 
     // Obstacles
     final private float obstacleSpeed = -5f;
@@ -223,8 +223,8 @@ public class GameScreen implements Screen {
     private void logic() {
         delta = Gdx.graphics.getDeltaTime();
 
-        velocity += GRAVITY;
-
+        velocity += GRAVITY * delta;
+        System.out.println("Velocity: " + velocity + ", Y: " + birbSprite.getY());
         isNewHighscore();
 
         scrollBackground();
@@ -312,8 +312,8 @@ public class GameScreen implements Screen {
     @Override
     public void resume() {
         // When resuming game, show birb and jump once
-        birbSprite.setSize(93, 58);
-        velocity = JUMP_STRENGTH;
+        // birbSprite.setSize(93, 58);
+        // velocity = JUMP_STRENGTH;
     }
 
     @Override
