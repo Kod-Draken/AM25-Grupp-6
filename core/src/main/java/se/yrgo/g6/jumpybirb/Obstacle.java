@@ -28,18 +28,30 @@ public class Obstacle {
         obstacleSprites = new Array<>();
     }
 
-    public void createObstacle(float x, float y) {
+    public void createTree(float x) {
         groundedObstacleSprite = new Sprite(tree);
+        //Gives obstacle random scale
+        randomScale = 1 * MathUtils.random(0.7f, 0.75f);
+        randomPosition = 1 * MathUtils.random(1f, 1.2f);
+        groundedObstacleSprite.setSize(groundedObstacleSprite.getWidth() * randomScale, groundedObstacleSprite.getHeight() * randomScale);
+        groundedObstacleSprite.setPosition(x * randomPosition, 0);
+
+        obstacleHitbox = new Hitboxes(groundedObstacleSprite);
+        obstacleHitbox.createTree();
+        obstacleHitboxes.add(obstacleHitbox);
+
+        obstacleSprites.add(groundedObstacleSprite);
+    }
+
+    public void createCloud(float x, float y) {
         elevatedObstacleSprite = new Sprite(cloud);
 
         //Gives obstacle random scale
         randomScale = 1 * MathUtils.random(0.65f, 0.8f);
-        randomPosition = 1 * MathUtils.random(1f, 1.40f);
+        randomPosition = 1 * MathUtils.random(1f, 1.2f);
 
         //Set the obstacle size and position at right-side of screen
-        groundedObstacleSprite.setSize(171 * randomScale, 300 * randomScale);
-        elevatedObstacleSprite.setSize(elevatedObstacleSprite.getWidth(), elevatedObstacleSprite.getHeight());
-        groundedObstacleSprite.setPosition(x * randomPosition, 0);
+        elevatedObstacleSprite.setSize(elevatedObstacleSprite.getWidth() * randomScale, elevatedObstacleSprite.getHeight() * randomScale);
         //High cloud
         if (MathUtils.randomBoolean()) {
             elevatedObstacleSprite.setPosition(x * randomPosition, y - elevatedObstacleSprite.getHeight());
@@ -49,14 +61,10 @@ public class Obstacle {
             elevatedObstacleSprite.setPosition(x * randomPosition, y - elevatedObstacleSprite.getHeight() * 2);
         }
 
-        obstacleHitbox = new Hitboxes(groundedObstacleSprite);
-        obstacleHitbox.createTree();
-        obstacleHitboxes.add(obstacleHitbox);
         obstacleHitbox = new Hitboxes(elevatedObstacleSprite);
         obstacleHitbox.createCloud();
         obstacleHitboxes.add(obstacleHitbox);
 
-        obstacleSprites.add(groundedObstacleSprite);
         obstacleSprites.add(elevatedObstacleSprite);
     }
 
