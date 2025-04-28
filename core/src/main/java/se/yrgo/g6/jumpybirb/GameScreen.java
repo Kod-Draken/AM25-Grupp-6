@@ -35,8 +35,8 @@ public class GameScreen implements Screen {
     private Array<Hitboxes> obstacleHitboxes;
     private Hitboxes obstacleHitbox;
 
-    private final float BACKGROUND_SPEED = 1;
-    private final float FLOOR_SPEED = 2;
+    private final float BACKGROUND_SPEED = 100f;
+    private final float FLOOR_SPEED = 200f;
 
     float velocity = 0f;
     final private float GRAVITY = -1700f;
@@ -62,6 +62,15 @@ public class GameScreen implements Screen {
 
     private boolean gameOver;
 
+    // Testing stuff
+    private float timer;
+    private int value;
+
+
+    private boolean inputBlocked = true;
+    private float inputBlockTime = 0;
+    private static final float BLOCK_DURATION = 1f;
+
     public GameScreen(BirbGame game, FitViewport viewport, Birb birb, Obstacle obstacle) {
         this.game = game;
         this.viewport = viewport;
@@ -81,6 +90,32 @@ public class GameScreen implements Screen {
 
         jumpSound = Gdx.audio.newSound(Gdx.files.internal("JumpSound.mp3"));
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("GameOverSound.mp3"));
+
+        // Testing
+        timer = 0f;
+        value = 3;
+    }
+
+    private void blockInput(float delta) {
+        if (inputBlocked) {
+            inputBlockTime += delta;
+            if (inputBlockTime >= BLOCK_DURATION) {
+                inputBlocked = false;  // Unblock input after the duration
+                inputBlockTime = 0;    // Reset the timer
+            }
+        }
+    }
+
+    private void countDownBeforeStart() {
+        if (timer > 0) {
+        timer += Gdx.graphics.getDeltaTime();
+            if (timer >= 1) {
+                timer = 0;
+                System.out.println(value);
+                value --;
+            }
+        }
+
     }
 
     private void initAnimation() {
@@ -137,6 +172,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        //testing
+        countDownBeforeStart();
+
         // Time for animation
         jumpAnimationTimer += delta;
 
@@ -226,6 +264,7 @@ public class GameScreen implements Screen {
         delta = Gdx.graphics.getDeltaTime();
 
         velocity += GRAVITY * delta;
+
         isNewHighscore();
 
         scrollBackground();
@@ -289,15 +328,15 @@ public class GameScreen implements Screen {
     }
 
     private void scrollFloor() {
-        game.floorOffset += FLOOR_SPEED;
-        if (game.floorOffset % (worldWidth) == 0) {
+        game.floorOffset += FLOOR_SPEED * delta;
+        if (game.floorOffset >= worldWidth) {
             game.floorOffset = 0;
         }
     }
 
     private void scrollBackground() {
-        game.backgroundOffset += BACKGROUND_SPEED;
-        if (game.backgroundOffset % (worldWidth * 2) == 0) {
+        game.backgroundOffset += BACKGROUND_SPEED * delta;
+        if (game.backgroundOffset >= (worldWidth * 2)) {
             game.backgroundOffset = 0;
         }
     }

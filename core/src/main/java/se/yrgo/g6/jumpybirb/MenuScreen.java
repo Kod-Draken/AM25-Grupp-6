@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
@@ -18,6 +19,8 @@ public class MenuScreen implements Screen {
     private float worldWidth;
     private float worldHeight;
 
+    private Texture background;
+
     private SpriteBatch batch;
     private BitmapFont font;
 
@@ -27,6 +30,8 @@ public class MenuScreen implements Screen {
 
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
+
+        background = new Texture("background-WIDER2.png");
 
         batch = new SpriteBatch();
 
@@ -52,6 +57,8 @@ public class MenuScreen implements Screen {
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
         batch.begin();
+
+        batch.draw(background, -game.backgroundOffset, 0, worldWidth * 2, worldHeight);
 
         font.draw(batch, "Welcome to Jumpy Birb!", 250, 470);
         font.draw(batch, "Press space to begin playing", 250, 440);
