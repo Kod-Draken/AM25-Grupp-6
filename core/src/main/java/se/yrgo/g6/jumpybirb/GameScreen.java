@@ -76,6 +76,9 @@ public class GameScreen implements Screen {
         this.viewport = viewport;
         this.obstacle = obstacle;
 
+        game.backgroundOffset = 0;
+        game.floorOffset = 0;
+
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
@@ -106,6 +109,7 @@ public class GameScreen implements Screen {
         }
     }
 
+    // what does this do?
     private void countDownBeforeStart() {
         if (timer > 0) {
         timer += Gdx.graphics.getDeltaTime();
