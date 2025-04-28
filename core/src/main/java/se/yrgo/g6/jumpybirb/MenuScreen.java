@@ -58,10 +58,12 @@ public class MenuScreen implements Screen {
 
         batch.begin();
 
-        batch.draw(background, -game.backgroundOffset, 0, worldWidth * 2, worldHeight);
+        batch.draw(background, 0, 0, worldWidth * 2, worldHeight);
 
         font.draw(batch, "Welcome to Jumpy Birb!", 250, 470);
         font.draw(batch, "Press space to begin playing", 250, 440);
+
+
 
         batch.end();
     }

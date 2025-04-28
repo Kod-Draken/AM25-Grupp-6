@@ -73,7 +73,12 @@ public class GameOverScreen implements Screen {
         if (startNewRound()) {
             game.newGame();
         }
+
+        if (returnToMenu()) {
+            game.mainMenu();
+        }
     }
+
 
     private void blockInput(float delta) {
         if (inputBlocked) {
@@ -129,8 +134,11 @@ public class GameOverScreen implements Screen {
 
     private void drawText(String highscore) {
         batch.draw(gameOver, 0, 0, worldWidth, worldHeight);
-        font.draw(batch, "Score: " + game.getScore(), 250, 470, 300, Align.center, true );
-        font.draw(batch, highscore + game.getHighScore(), 250, 440, 300, Align.center, true);
+        font.draw(batch, "Score: " + game.getScore(), worldWidth / 2 - (float) 300 / 2, 470, 300, Align.center, true );
+        font.draw(batch, highscore + game.getHighScore(), worldWidth / 2 - (float) 300 / 2, 440, 300, Align.center, true);
+
+        font.draw(batch, "Press SPACE to play again", worldWidth / 2 - (float) 400 / 2, 200, 400, Align.center, true );
+        font.draw(batch, "Press ESCAPE to return to menu", worldWidth / 2 - (float) 600 / 2, 170, 600, Align.center, true );
     }
 
     private boolean startNewRound() {
@@ -139,6 +147,11 @@ public class GameOverScreen implements Screen {
             || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT);
     }
 
+    private boolean returnToMenu() {
+        if (inputBlocked) return false;
+        return Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE);
+
+    }
     @Override
     public void show() {
         viewport.apply();
