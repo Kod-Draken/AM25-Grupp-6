@@ -46,7 +46,7 @@ public class BirbGame extends Game {
     }
 
     private void initAndPlayMusic() {
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("BirbGameTheme.mp3"));
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/BirbGameTheme.mp3"));
         backgroundMusic.setVolume(.4f);
         backgroundMusic.setLooping(true);
         backgroundMusic.play();

@@ -88,8 +88,8 @@ public class GameScreen implements Screen {
         initFonts();
         initAnimation();
 
-        jumpSound = Gdx.audio.newSound(Gdx.files.internal("JumpSound.mp3"));
-        gameOverSound = Gdx.audio.newSound(Gdx.files.internal("GameOverSound.mp3"));
+        jumpSound = Gdx.audio.newSound(Gdx.files.internal("sound/JumpSound.mp3"));
+        gameOverSound = Gdx.audio.newSound(Gdx.files.internal("sound/GameOverSound.mp3"));
 
         // Testing
         timer = 0f;
@@ -147,9 +147,9 @@ public class GameScreen implements Screen {
     }
 
     private void initTextures() {
-        background = new Texture("background-WIDER2.png");
-        floor = new Texture("floor.png");
-        birbFlapSheet = new Texture("birbAnimationSheet.png");
+        background = new Texture("textures/background-WIDER2.png");
+        floor = new Texture("textures/floor.png");
+        birbFlapSheet = new Texture("textures/animations/birbAnimationSheet.png");
     }
 
     private void initSprites(Birb birb) {
@@ -387,7 +387,7 @@ public class GameScreen implements Screen {
      * @param b The birb hitbox
      */
     private void drawRed(Array<Hitboxes> o, Hitboxes b) {
-        Texture red = new Texture("red.jpg");
+        Texture red = new Texture("textures/debug/red.jpg");
         for (Hitboxes h : o) {
             batch.draw(red, h.getRect().getX(), h.getRect().getY(), h.getRect().getWidth(), h.getRect().getHeight());
         }

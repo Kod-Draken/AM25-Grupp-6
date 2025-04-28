@@ -47,9 +47,9 @@ public class GameOverScreen implements Screen {
     }
 
     private void initTextures() {
-        background = new Texture("background-WIDER2.png");
-        floor = new Texture("floor.png");
-        gameOver = new Texture("gameover.png");
+        background = new Texture("textures/background-WIDER2.png");
+        floor = new Texture("textures/floor.png");
+        gameOver = new Texture("textures/gameover.png");
     }
 
     private void initBirb(Birb birb) {
