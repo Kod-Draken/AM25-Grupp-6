@@ -21,40 +21,49 @@ public class BirbGame extends Game {
     float backgroundOffset;
     float floorOffset;
 
+    private Music mainMenuMusic;
     private Music backgroundMusic;
 
     @Override
     public void create() {
-        mainMenu();
         initScoreKeeper();
-
+        initMusic();
+        mainMenu();
     }
+
 
     public void mainMenu() {
         currentScreen = new MenuScreen(this, viewport);
         setScreen(currentScreen);
+        playMusic(mainMenuMusic);
     }
 
     public void newGame() {
+        stopAndResetMusic(mainMenuMusic);
         birb = new Birb();
         obstacle = new Obstacle();
         currentScreen = new GameScreen(this, viewport, birb, obstacle);
         setScreen(currentScreen);
         this.score = 0;
-
-        initAndPlayMusic();
+        playMusic(backgroundMusic);
     }
 
-    private void initAndPlayMusic() {
+    private void initMusic() {
+        mainMenuMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/MainMenuMusic.mp3"));
+        mainMenuMusic.setVolume(.4f);
+        mainMenuMusic.setLooping(true);
+
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sound/BirbGameTheme.mp3"));
         backgroundMusic.setVolume(.4f);
         backgroundMusic.setLooping(true);
-        backgroundMusic.play();
+    }
+    private void playMusic(Music music) {
+        music.play();
     }
 
-    private void stopAndResetMusic() {
-        backgroundMusic.stop();
-        backgroundMusic.dispose();
+    private void stopAndResetMusic(Music music) {
+        music.stop();
+        music.dispose();
     }
 
     public void initScoreKeeper() {
@@ -63,7 +72,7 @@ public class BirbGame extends Game {
 
     public void gameOver() {
 
-        stopAndResetMusic();
+        stopAndResetMusic(backgroundMusic);
 
         GameOverScreen gameOverScreen = new GameOverScreen(this, viewport, birb, obstacle);
         setScreen(gameOverScreen);
