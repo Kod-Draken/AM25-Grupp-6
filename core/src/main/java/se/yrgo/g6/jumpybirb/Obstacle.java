@@ -22,8 +22,8 @@ public class Obstacle {
 
     public Obstacle() {
 
-        cloud = new Texture("cloud.png");
-        tree = new Texture("tree1.png");
+        cloud = new Texture("textures/cloud.png");
+        tree = new Texture("textures/tree1.png");
         obstacleHitboxes = new Array<>();
         obstacleSprites = new Array<>();
     }

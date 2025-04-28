@@ -31,7 +31,7 @@ public class MenuScreen implements Screen {
         worldWidth = viewport.getWorldWidth();
         worldHeight = viewport.getWorldHeight();
 
-        background = new Texture("background-WIDER2.png");
+        background = new Texture("textures/background-WIDER2.png");
 
         batch = new SpriteBatch();
 

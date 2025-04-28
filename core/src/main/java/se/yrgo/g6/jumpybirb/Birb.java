@@ -8,7 +8,7 @@ public class Birb {
     private Sprite birbSprite;
 
     public Birb() {
-        birb = new Texture("birb.png");
+        birb = new Texture("textures/birb.png");
         birbSprite = new Sprite(birb);
         birbSprite.setSize(93, 58  );
     }
