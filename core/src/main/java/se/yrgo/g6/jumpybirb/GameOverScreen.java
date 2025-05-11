@@ -49,7 +49,7 @@ public class GameOverScreen implements Screen {
     private void initTextures() {
         background = new Texture("textures/background-WIDER2.png");
         floor = new Texture("textures/floor.png");
-        gameOver = new Texture("textures/gameover.png");
+        gameOver = new Texture("textures/splashes/gameOverSplash.png");
     }
 
     private void initBirb(Birb birb) {
@@ -133,7 +133,8 @@ public class GameOverScreen implements Screen {
     }
 
     private void drawText(String highscore) {
-        batch.draw(gameOver, 0, 0, worldWidth, worldHeight);
+        batch.draw(gameOver, worldWidth / 2 - ((float) gameOver.getWidth() /  2),
+            worldHeight / 2 - ((float) gameOver.getHeight() / 2), gameOver.getWidth() , gameOver.getHeight());
         font.draw(batch, "Score: " + game.getScore(), worldWidth / 2 - (float) 300 / 2, 470, 300, Align.center, true );
         font.draw(batch, highscore + game.getHighScore(), worldWidth / 2 - (float) 300 / 2, 440, 300, Align.center, true);
 
